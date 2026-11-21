@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>à¦œà¦¯à¦¼à§‡à¦¨à¦¿à¦‚ à¦Ÿà§à¦°à¦¿</title>
+<title>জয়েনিং ট্রি</title>
 <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
@@ -57,7 +57,7 @@ body.compact .n-name{height:1.15em;margin-top:1px}
 .branch-right{background:#3b8bdc}.branch-right:active{background:#2a6cae}
 .empty-state{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:14px;padding:20px;pointer-events:none}
 
-/* ===== à¦¬à§à¦²à¦• à¦­à¦¿à¦‰ ===== */
+/* ===== ব্লক ভিউ ===== */
 #blockView{position:fixed;top:54px;left:0;right:0;bottom:0;overflow-y:auto;background:var(--bg);padding:10px 10px 90px;-webkit-overflow-scrolling:touch}
 #blockInner{max-width:900px;margin:0 auto}
 body:not(.view-block) #blockView{display:none}
@@ -152,16 +152,16 @@ body.dark .recent-item:hover{background:#2a3730}
 <body>
 
 <header class="top">
-    <h1>ðŸŒ³ à¦œà¦¯à¦¼à§‡à¦¨à¦¿à¦‚ à¦Ÿà§à¦°à¦¿</h1>
+    <h1>🌳 জয়েনিং ট্রি</h1>
     <div class="spacer"></div>
-    <button class="icon-btn" onclick="toggleSearch()">ðŸ”</button>
-    <button class="icon-btn" onclick="openMenu()">â˜°</button>
+    <button class="icon-btn" onclick="toggleSearch()">🔍</button>
+    <button class="icon-btn" onclick="openMenu()">☰</button>
 </header>
 
 <div class="search-panel" id="searchPanel">
     <div class="search-input-wrap">
-        <input type="text" id="searchInput" placeholder="XM à¦•à§‹à¦¡ à¦¬à¦¾ à¦¨à¦¾à¦®..." oninput="doSearch(this.value)" autocomplete="off">
-        <button class="icon-btn" style="background:var(--card);color:var(--trunk);border:1px solid var(--line);border-radius:10px;width:42px;cursor:pointer" onclick="toggleSearch()">âœ•</button>
+        <input type="text" id="searchInput" placeholder="XM কোড বা নাম..." oninput="doSearch(this.value)" autocomplete="off">
+        <button class="icon-btn" style="background:var(--card);color:var(--trunk);border:1px solid var(--line);border-radius:10px;width:42px;cursor:pointer" onclick="toggleSearch()">✕</button>
     </div>
     <div id="searchResults"></div>
 </div>
@@ -169,129 +169,129 @@ body.dark .recent-item:hover{background:#2a3730}
 <div class="viewport" id="viewport"><div class="canvas" id="canvas"></div></div>
 <div id="blockView"><div id="blockInner"></div></div>
 
-<div class="float-left"><button onclick="undo()" title="Undo">â†©</button></div>
+<div class="float-left"><button onclick="undo()" title="Undo">↩</button></div>
 <div class="float-right">
     <button onclick="zoomTree(1.25)">+</button>
-    <button onclick="zoomTree(0.8)">âˆ’</button>
-    <button onclick="zoomFit()" style="font-size:14px" title="à¦«à¦¿à¦Ÿ">â¤¢</button>
-    <button onclick="zoomReset()" style="font-size:14px">âŸ²</button>
+    <button onclick="zoomTree(0.8)">−</button>
+    <button onclick="zoomFit()" style="font-size:14px" title="ফিট">⤢</button>
+    <button onclick="zoomReset()" style="font-size:14px">⟲</button>
 </div>
 
 <div class="modal-overlay" id="menuModal">
     <div class="modal-box">
-        <button class="close" onclick="closeModal('menuModal')">âœ•</button>
-        <h2>à¦®à§‡à¦¨à§</h2>
+        <button class="close" onclick="closeModal('menuModal')">✕</button>
+        <h2>মেনু</h2>
         <div class="stat-grid">
-            <div class="stat-card"><div class="v" id="statMembers">0</div><div class="l">à¦¸à¦•à§à¦°à¦¿à¦¯à¦¼</div></div>
-            <div class="stat-card"><div class="v" id="statInvest">0à§³</div><div class="l">à¦Ÿà¦¿à¦® à¦‡à¦¨à¦­à§‡à¦¸à§à¦Ÿ</div></div>
-            <div class="stat-card"><div class="v" id="statNodes">0</div><div class="l">à¦¨à§‹à¦¡</div></div>
+            <div class="stat-card"><div class="v" id="statMembers">0</div><div class="l">সক্রিয়</div></div>
+            <div class="stat-card"><div class="v" id="statInvest">0৳</div><div class="l">টিম ইনভেস্ট</div></div>
+            <div class="stat-card"><div class="v" id="statNodes">0</div><div class="l">নোড</div></div>
         </div>
         <div class="menu-section">
-            <h3>à¦¦à§ƒà¦¶à§à¦¯ à¦¬à¦¦à¦²à¦¾à¦¨</h3>
-            <button class="btn btn-gold" id="viewToggleBtn" onclick="toggleView()">ðŸ§± à¦¬à§à¦²à¦• à¦­à¦¿à¦‰ (à¦¨à¦¿à¦šà§‡ à¦¬à¦¾à¦¡à¦¼à¦¾)</button>
+            <h3>দৃশ্য বদলান</h3>
+            <button class="btn btn-gold" id="viewToggleBtn" onclick="toggleView()">🧱 ব্লক ভিউ (নিচে বাড়া)</button>
         </div>
         <div class="menu-section" id="recentSection" style="display:none">
-            <h3>ðŸ•’ à¦¸à¦®à§à¦ªà§à¦°à¦¤à¦¿ à¦¦à§‡à¦–à¦¾</h3>
+            <h3>🕒 সম্প্রতি দেখা</h3>
             <div id="recentBox"></div>
         </div>
         <div class="menu-section">
-            <h3>à¦…à§à¦¯à¦¾à¦•à¦¶à¦¨</h3>
-            <button class="btn btn-primary" onclick="closeModal('menuModal');openAddNode(null)">âž• à¦°à§à¦Ÿ à¦¨à§‹à¦¡ à¦¯à§‹à¦—</button>
-            <button class="btn btn-outline" onclick="exportPNG()">ðŸ“¸ PNG à¦à¦•à§à¦¸à¦ªà§‹à¦°à§à¦Ÿ (à¦›à¦¡à¦¼à¦¾à¦¨à§‹ à¦Ÿà§à¦°à¦¿)</button>
-            <button class="btn btn-outline" onclick="exportHTML()">ðŸŒ HTML à¦à¦•à§à¦¸à¦ªà§‹à¦°à§à¦Ÿ (à¦•à¦ªà¦¿à¦¯à§‹à¦—à§à¦¯)</button>
-            <button class="btn btn-outline" onclick="exportCSV()">ðŸ“Š CSV à¦à¦•à§à¦¸à¦ªà§‹à¦°à§à¦Ÿ (Excel)</button>
-            <button class="btn btn-outline" onclick="downloadBackup()">ðŸ“¥ à¦¬à§à¦¯à¦¾à¦•à¦†à¦ª (JSON)</button>
-            <button class="btn btn-outline" onclick="document.getElementById('restoreInput').click()">ðŸ“¤ à¦°à¦¿à¦¸à§à¦Ÿà§‹à¦°</button>
+            <h3>অ্যাকশন</h3>
+            <button class="btn btn-primary" onclick="closeModal('menuModal');openAddNode(null)">➕ রুট নোড যোগ</button>
+            <button class="btn btn-outline" onclick="exportPNG()">📸 PNG এক্সপোর্ট (ছড়ানো ট্রি)</button>
+            <button class="btn btn-outline" onclick="exportHTML()">🌐 HTML এক্সপোর্ট (কপিযোগ্য)</button>
+            <button class="btn btn-outline" onclick="exportCSV()">📊 CSV এক্সপোর্ট (Excel)</button>
+            <button class="btn btn-outline" onclick="downloadBackup()">📥 ব্যাকআপ (JSON)</button>
+            <button class="btn btn-outline" onclick="document.getElementById('restoreInput').click()">📤 রিস্টোর</button>
             <input type="file" id="restoreInput" accept=".json" style="display:none" onchange="restoreBackup(event)">
         </div>
         <div class="menu-section">
-            <h3>à¦¦à§ƒà¦¶à§à¦¯ (à¦›à¦¡à¦¼à¦¾à¦¨à§‹ à¦Ÿà§à¦°à¦¿)</h3>
-            <button class="btn btn-outline" id="compactToggleBtn" onclick="toggleCompact()">ðŸ“ à¦•à¦®à¦ªà§à¦¯à¦¾à¦•à§à¦Ÿ à¦­à¦¿à¦‰</button>
-            <button class="btn btn-outline" id="darkToggleBtn" onclick="toggleDark()">ðŸŒ™ à¦¡à¦¾à¦°à§à¦• à¦®à§‹à¦¡</button>
-            <button class="btn btn-outline" onclick="collapseAll(true)">âŠŸ à¦¸à¦¬ à¦¬à¦¨à§à¦§ à¦•à¦°à§à¦¨</button>
-            <button class="btn btn-outline" onclick="collapseAll(false)">âŠž à¦¸à¦¬ à¦–à§à¦²à§à¦¨</button>
+            <h3>দৃশ্য (ছড়ানো ট্রি)</h3>
+            <button class="btn btn-outline" id="compactToggleBtn" onclick="toggleCompact()">📐 কমপ্যাক্ট ভিউ</button>
+            <button class="btn btn-outline" id="darkToggleBtn" onclick="toggleDark()">🌙 ডার্ক মোড</button>
+            <button class="btn btn-outline" onclick="collapseAll(true)">⊟ সব বন্ধ করুন</button>
+            <button class="btn btn-outline" onclick="collapseAll(false)">⊞ সব খুলুন</button>
         </div>
         <div class="menu-section">
-            <h3>ðŸ’¾ à¦…à¦Ÿà§‹-à¦¬à§à¦¯à¦¾à¦•à¦†à¦ª</h3>
-            <div class="team-info" id="backupStatus">à¦«à§‹à¦²à§à¦¡à¦¾à¦° à¦¸à§‡à¦Ÿ à¦•à¦°à¦¾ à¦¹à¦¯à¦¼à¦¨à¦¿</div>
-            <button class="btn btn-outline btn-sm" onclick="pickBackupFolder()">ðŸ“‚ à¦«à§‹à¦²à§à¦¡à¦¾à¦° à¦¨à¦¿à¦°à§à¦¬à¦¾à¦šà¦¨</button>
-            <button class="btn btn-outline btn-sm" onclick="runAutoBackupNow()">â–¶ à¦à¦–à¦¨à¦‡ à¦¬à§à¦¯à¦¾à¦•à¦†à¦ª</button>
+            <h3>💾 অটো-ব্যাকআপ</h3>
+            <div class="team-info" id="backupStatus">ফোল্ডার সেট করা হয়নি</div>
+            <button class="btn btn-outline btn-sm" onclick="pickBackupFolder()">📂 ফোল্ডার নির্বাচন</button>
+            <button class="btn btn-outline btn-sm" onclick="runAutoBackupNow()">▶ এখনই ব্যাকআপ</button>
         </div>
         <div class="menu-section">
-            <h3>ðŸ“Š à¦¶à¦¾à¦–à¦¾-à¦­à¦¿à¦¤à§à¦¤à¦¿à¦• à¦‡à¦¨à¦­à§‡à¦¸à§à¦Ÿ</h3>
+            <h3>📊 শাখা-ভিত্তিক ইনভেস্ট</h3>
             <div id="chartBox"></div>
         </div>
         <div class="menu-section">
-            <button class="btn btn-outline" onclick="toggleGuide()">ðŸ“– à¦¨à¦¿à¦°à§à¦¦à§‡à¦¶à¦¿à¦•à¦¾</button>
+            <button class="btn btn-outline" onclick="toggleGuide()">📖 নির্দেশিকা</button>
             <div class="guide" id="guideBox" style="margin-top:8px">
-                <h4>à¦›à¦¡à¦¼à¦¾à¦¨à§‹ à¦Ÿà§à¦°à¦¿</h4>
+                <h4>ছড়ানো ট্রি</h4>
                 <ul style="padding-left:18px">
-                    <li>âœŽ (à¦¡à¦¾à¦¨à§‡) â†’ à¦à¦¡à¦¿à¦Ÿ</li>
-                    <li>âˆ’ (à¦¬à¦¾à¦à¦¯à¦¼à§‡) â†’ à¦šà¦¾à¦‡à¦²à§à¦¡ à¦²à§à¦•à¦¾à¦¨/à¦¦à§‡à¦–à¦¾à¦¨</li>
-                    <li>â—€ + (à¦•à¦®à¦²à¦¾) â†’ à¦¬à¦¾à¦® à¦šà¦¾à¦‡à¦²à§à¦¡</li>
-                    <li>+ â–¶ (à¦¨à§€à¦²) â†’ à¦¡à¦¾à¦¨ à¦šà¦¾à¦‡à¦²à§à¦¡</li>
-                    <li>ðŸ“ à¦šà¦¿à¦¹à§à¦¨ = à¦¨à§‹à¦Ÿ à¦†à¦›à§‡</li>
+                    <li>✎ (ডানে) → এডিট</li>
+                    <li>− (বাঁয়ে) → চাইল্ড লুকান/দেখান</li>
+                    <li>◀ + (কমলা) → বাম চাইল্ড</li>
+                    <li>+ ▶ (নীল) → ডান চাইল্ড</li>
+                    <li>📝 চিহ্ন = নোট আছে</li>
                 </ul>
-                <h4>à¦¬à§à¦²à¦• à¦­à¦¿à¦‰</h4>
+                <h4>ব্লক ভিউ</h4>
                 <ul style="padding-left:18px">
-                    <li>à¦ªà§à¦°à¦¤à¦¿à¦Ÿà¦¿ à¦¬à§à¦²à¦•à§‡ à¦à¦•à¦œà¦¨ à¦ªà§à¦¯à¦¾à¦°à§‡à¦¨à§à¦Ÿ, à¦¨à¦¿à¦šà§‡ à¦¬à¦¾à¦® (à¦•à¦®à¦²à¦¾) à¦“ à¦¡à¦¾à¦¨ (à¦¨à§€à¦²) à¦•à¦²à¦¾à¦®</li>
-                    <li>à¦¬à§à¦²à¦•à§‡à¦° à¦®à¦¾à¦¥à¦¾à¦¯à¦¼ à¦ªà¦¥ à¦²à§‡à¦–à¦¾: à¦•à¦¾à¦° à¦¨à¦¿à¦šà§‡ à¦•à§‡</li>
-                    <li>"â†“ N à¦œà¦¨" à¦šà¦¾à¦ªà¦²à§‡ à¦¤à¦¾à¦° à¦¨à¦¿à¦œà§‡à¦° à¦¬à§à¦²à¦•à§‡ à¦¯à¦¾à¦¬à§‡</li>
-                    <li>"â†‘ à¦‰à¦ªà¦°à§‡" à¦šà¦¾à¦ªà¦²à§‡ à¦ªà§à¦¯à¦¾à¦°à§‡à¦¨à§à¦Ÿà§‡à¦° à¦¬à§à¦²à¦•à§‡ à¦«à¦¿à¦°à¦¬à§‡</li>
-                    <li>"â—€ à¦¬à¦¾à¦®à§‡ à¦¯à§‹à¦—" / "à¦¡à¦¾à¦¨à§‡ à¦¯à§‹à¦— â–¶" à¦¦à¦¿à¦¯à¦¼à§‡ à¦¨à¦¤à§à¦¨ à¦šà¦¾à¦‡à¦²à§à¦¡</li>
+                    <li>প্রতিটি ব্লকে একজন প্যারেন্ট, নিচে বাম (কমলা) ও ডান (নীল) কলাম</li>
+                    <li>ব্লকের মাথায় পথ লেখা: কার নিচে কে</li>
+                    <li>"↓ N জন" চাপলে তার নিজের ব্লকে যাবে</li>
+                    <li>"↑ উপরে" চাপলে প্যারেন্টের ব্লকে ফিরবে</li>
+                    <li>"◀ বামে যোগ" / "ডানে যোগ ▶" দিয়ে নতুন চাইল্ড</li>
                 </ul>
-                <h4>à¦‡à¦¨à¦­à§‡à¦¸à§à¦Ÿ à¦¤à¦¾à¦²à¦¿à¦•à¦¾</h4>
+                <h4>ইনভেস্ট তালিকা</h4>
                 <ul style="padding-left:18px">
-                    <li>à¦à¦¡à¦¿à¦Ÿà§‡ à¦ªà§à¦°à¦¤à¦¿à¦Ÿà¦¿ à¦‡à¦¨à¦­à§‡à¦¸à§à¦Ÿ à¦†à¦²à¦¾à¦¦à¦¾ à¦à¦¨à§à¦Ÿà§à¦°à¦¿ (à¦Ÿà¦¾à¦•à¦¾ + à¦¤à¦¾à¦°à¦¿à¦–)</li>
-                    <li>à¦¨à¦¿à¦œà§‡à¦° à¦‡à¦¨à¦­à§‡à¦¸à§à¦Ÿ = à¦¸à¦¬ à¦à¦¨à§à¦Ÿà§à¦°à¦¿à¦° à¦¯à§‹à¦—à¦«à¦²</li>
+                    <li>এডিটে প্রতিটি ইনভেস্ট আলাদা এন্ট্রি (টাকা + তারিখ)</li>
+                    <li>নিজের ইনভেস্ট = সব এন্ট্রির যোগফল</li>
                 </ul>
             </div>
         </div>
-        <button class="btn btn-danger" onclick="clearAll()">ðŸ—‘ï¸ à¦¸à¦¬ à¦®à§à¦›à§à¦¨</button>
+        <button class="btn btn-danger" onclick="clearAll()">🗑️ সব মুছুন</button>
     </div>
 </div>
 
 <div class="modal-overlay" id="addModal">
     <div class="modal-box">
-        <button class="close" onclick="closeModal('addModal')">âœ•</button>
-        <h2 id="addModalTitle">à¦°à§à¦Ÿ à¦¨à§‹à¦¡ à¦¯à§‹à¦—</h2>
+        <button class="close" onclick="closeModal('addModal')">✕</button>
+        <h2 id="addModalTitle">রুট নোড যোগ</h2>
         <div class="field readonly" id="parentInfoField" style="display:none">
-            <label>à¦ªà§à¦¯à¦¾à¦°à§‡à¦¨à§à¦Ÿ</label>
+            <label>প্যারেন্ট</label>
             <input type="text" id="parentDisplay" readonly>
         </div>
-        <div class="field"><label>XM à¦•à§‹à¦¡ *</label><input type="text" id="addXmCode" placeholder="XM0001"></div>
-        <div class="field"><label>à¦¨à¦¾à¦® *</label><input type="text" id="addName" placeholder="à¦†à¦¬à§à¦² à¦•à¦¾à¦²à¦¾à¦®"></div>
+        <div class="field"><label>XM কোড *</label><input type="text" id="addXmCode" placeholder="XM0001"></div>
+        <div class="field"><label>নাম *</label><input type="text" id="addName" placeholder="আবুল কালাম"></div>
         <div class="err" id="addErr"></div>
-        <div class="field"><label>à¦ªà§à¦°à¦¥à¦® à¦‡à¦¨à¦­à§‡à¦¸à§à¦Ÿ (à§³)</label><input type="number" id="addInvestment" placeholder="0" inputmode="numeric"></div>
-        <div class="field"><label>à¦‡à¦¨à¦­à§‡à¦¸à§à¦Ÿà§‡à¦° à¦¤à¦¾à¦°à¦¿à¦–</label><input type="date" id="addInvDate"></div>
-        <div class="field"><label>à¦œà¦¯à¦¼à§‡à¦¨ à¦¤à¦¾à¦°à¦¿à¦–</label><input type="date" id="addJoinDate"></div>
-        <div class="field"><label>à¦¨à§‹à¦Ÿ (à¦à¦šà§à¦›à¦¿à¦•)</label><textarea id="addNote" rows="2" placeholder="à¦¬à¦¾à¦¡à¦¼à¦¤à¦¿ à¦¤à¦¥à§à¦¯..."></textarea></div>
-        <button class="btn btn-primary" onclick="saveNewNode()">à¦¸à¦‚à¦°à¦•à§à¦·à¦£</button>
+        <div class="field"><label>প্রথম ইনভেস্ট (৳)</label><input type="number" id="addInvestment" placeholder="0" inputmode="numeric"></div>
+        <div class="field"><label>ইনভেস্টের তারিখ</label><input type="date" id="addInvDate"></div>
+        <div class="field"><label>জয়েন তারিখ</label><input type="date" id="addJoinDate"></div>
+        <div class="field"><label>নোট (ঐচ্ছিক)</label><textarea id="addNote" rows="2" placeholder="বাড়তি তথ্য..."></textarea></div>
+        <button class="btn btn-primary" onclick="saveNewNode()">সংরক্ষণ</button>
     </div>
 </div>
 
 <div class="modal-overlay" id="editModal">
     <div class="modal-box">
-        <button class="close" onclick="closeModal('editModal')">âœ•</button>
-        <h2>à¦¨à§‹à¦¡ à¦à¦¡à¦¿à¦Ÿ</h2>
+        <button class="close" onclick="closeModal('editModal')">✕</button>
+        <h2>নোড এডিট</h2>
         <input type="hidden" id="editId">
-        <div class="field"><label>XM à¦•à§‹à¦¡ *</label><input type="text" id="editXmCode"></div>
-        <div class="field"><label>à¦¨à¦¾à¦® *</label><input type="text" id="editName"></div>
+        <div class="field"><label>XM কোড *</label><input type="text" id="editXmCode"></div>
+        <div class="field"><label>নাম *</label><input type="text" id="editName"></div>
         <div class="err" id="editErr"></div>
         <div class="field">
-            <label>à¦‡à¦¨à¦­à§‡à¦¸à§à¦Ÿ à¦¤à¦¾à¦²à¦¿à¦•à¦¾ (à¦Ÿà¦¾à¦•à¦¾ à¦“ à¦¤à¦¾à¦°à¦¿à¦–)</label>
+            <label>ইনভেস্ট তালিকা (টাকা ও তারিখ)</label>
             <div id="editInvList"></div>
-            <button class="btn btn-outline btn-sm" onclick="addInvRow()">âž• à¦‡à¦¨à¦­à§‡à¦¸à§à¦Ÿ à¦¯à§‹à¦—</button>
+            <button class="btn btn-outline btn-sm" onclick="addInvRow()">➕ ইনভেস্ট যোগ</button>
             <div class="team-info" id="editInvTotal" style="margin-top:8px;margin-bottom:0"></div>
         </div>
-        <div class="field"><label>à¦œà¦¯à¦¼à§‡à¦¨ à¦¤à¦¾à¦°à¦¿à¦–</label><input type="date" id="editJoinDate"></div>
-        <div class="field"><label>à¦¨à§‹à¦Ÿ (à¦à¦šà§à¦›à¦¿à¦•)</label><textarea id="editNote" rows="3"></textarea></div>
-        <div class="field"><label class="check"><input type="checkbox" id="editActive"> à¦¸à¦•à§à¦°à¦¿à¦¯à¦¼</label></div>
+        <div class="field"><label>জয়েন তারিখ</label><input type="date" id="editJoinDate"></div>
+        <div class="field"><label>নোট (ঐচ্ছিক)</label><textarea id="editNote" rows="3"></textarea></div>
+        <div class="field"><label class="check"><input type="checkbox" id="editActive"> সক্রিয়</label></div>
         <div class="team-info" id="editTeamInfo"></div>
-        <button class="btn btn-primary" onclick="saveEditedNode()">à¦¸à¦‚à¦°à¦•à§à¦·à¦£</button>
-        <button class="btn btn-gold" onclick="addChildFromEdit('left')">â—€ à¦¬à¦¾à¦®à§‡ à¦šà¦¾à¦‡à¦²à§à¦¡</button>
-        <button class="btn btn-gold" onclick="addChildFromEdit('right')">à¦¡à¦¾à¦¨à§‡ à¦šà¦¾à¦‡à¦²à§à¦¡ â–¶</button>
-        <button class="btn btn-danger" onclick="deleteNode()">ðŸ—‘ï¸ à¦®à§à¦›à§à¦¨</button>
+        <button class="btn btn-primary" onclick="saveEditedNode()">সংরক্ষণ</button>
+        <button class="btn btn-gold" onclick="addChildFromEdit('left')">◀ বামে চাইল্ড</button>
+        <button class="btn btn-gold" onclick="addChildFromEdit('right')">ডানে চাইল্ড ▶</button>
+        <button class="btn btn-danger" onclick="deleteNode()">🗑️ মুছুন</button>
     </div>
 </div>
 
@@ -308,30 +308,30 @@ const TWELVE_HOURS=12*60*60*1000;
 const NODE_W = 150;
 const H_GAP  = 26;
 const isCompact = () => document.body.classList.contains('compact');
-const vGap      = () => isCompact() ? 110 : 155;   // à¦à¦• à¦²à§‡à¦­à§‡à¦² à¦¥à§‡à¦•à§‡ à¦†à¦°à§‡à¦• à¦²à§‡à¦­à§‡à¦²à§‡à¦° à¦¦à§‚à¦°à¦¤à§à¦¬
-const nodeHalf  = () => isCompact() ? 38  : 59;    // à¦•à¦¾à¦°à§à¦¡à§‡à¦° à¦…à¦°à§à¦§à§‡à¦• à¦‰à¦šà§à¦šà¦¤à¦¾
+const vGap      = () => isCompact() ? 110 : 155;   // এক লেভেল থেকে আরেক লেভেলের দূরত্ব
+const nodeHalf  = () => isCompact() ? 38  : 59;    // কার্ডের অর্ধেক উচ্চতা
 
 let treeData={nodes:{}};
 let history=[];
 let lastPositions=null;
 let recentViewed=[];
 let editInvs=[];
-let viewMode='tree';   // à¦¶à§à¦°à§à¦¤à§‡ à¦›à¦¡à¦¼à¦¾à¦¨à§‹ à¦Ÿà§à¦°à¦¿
+let viewMode='tree';   // শুরুতে ছড়ানো ট্রি
 let zoom=1,panX=0,panY=0;
 let dragging=false,dragStartX=0,dragStartY=0,panStartX=0,panStartY=0;
 let pinchStartDist=0,pinchStartZoom=1;
 let backupDirHandle=null;
 let lastBackupCheck=0;
 
-const BN_DIGITS={'à§¦':'0','à§§':'1','à§¨':'2','à§©':'3','à§ª':'4','à§«':'5','à§¬':'6','à§­':'7','à§®':'8','à§¯':'9'};
-const parseNum=s=>{if(!s)return 0;const t=String(s).replace(/[à§¦-à§¯]/g,d=>BN_DIGITS[d]).replace(/[^\d.-]/g,'');const n=parseFloat(t);return isNaN(n)?0:n};
+const BN_DIGITS={'০':'0','১':'1','২':'2','৩':'3','৪':'4','৫':'5','৬':'6','৭':'7','৮':'8','৯':'9'};
+const parseNum=s=>{if(!s)return 0;const t=String(s).replace(/[০-৯]/g,d=>BN_DIGITS[d]).replace(/[^\d.-]/g,'');const n=parseFloat(t);return isNaN(n)?0:n};
 const formatNum=n=>!n?'0':Number(n).toLocaleString('en-IN');
 const todayISO=()=>new Date().toISOString().slice(0,10);
-const formatDateShort=iso=>{if(!iso)return 'â€”';const p=iso.split('-');if(p.length!==3)return iso;return `${p[2]}/${p[1]}/${p[0].slice(2)}`};
+const formatDateShort=iso=>{if(!iso)return '—';const p=iso.split('-');if(p.length!==3)return iso;return `${p[2]}/${p[1]}/${p[0].slice(2)}`};
 const escapeHtml=s=>s==null?'':String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200)}
 
-/* ---------- à¦‡à¦¨à¦­à§‡à¦¸à§à¦Ÿ à¦¤à¦¾à¦²à¦¿à¦•à¦¾ à¦¸à¦¹à¦¾à¦¯à¦¼à¦• ---------- */
+/* ---------- ইনভেস্ট তালিকা সহায়ক ---------- */
 function syncInv(n){
     n.investments=(n.investments||[]).filter(x=>x&&Number(x.amount)>0).map(x=>({amount:Number(x.amount),date:x.date||''}));
     n.investment=n.investments.reduce((s,x)=>s+x.amount,0);
@@ -370,7 +370,7 @@ function load(){
 }
 function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(treeData));render()}
 function pushHistory(){history.push(JSON.stringify(treeData));if(history.length>30)history.shift()}
-function undo(){if(!history.length){toast('Undo à¦•à¦°à¦¾à¦° à¦•à¦¿à¦›à§ à¦¨à§‡à¦‡à¥¤');return}treeData=JSON.parse(history.pop());localStorage.setItem(STORAGE_KEY,JSON.stringify(treeData));render();toast('à¦«à¦¿à¦°à¦¿à¦¯à¦¼à§‡ à¦†à¦¨à¦¾ à¦¹à¦¯à¦¼à§‡à¦›à§‡à¥¤')}
+function undo(){if(!history.length){toast('Undo করার কিছু নেই।');return}treeData=JSON.parse(history.pop());localStorage.setItem(STORAGE_KEY,JSON.stringify(treeData));render();toast('ফিরিয়ে আনা হয়েছে।')}
 const findRootId=()=>{for(const id in treeData.nodes){if(treeData.nodes[id].parentId===null)return id}return null};
 function calcTeamInvestment(id){const n=treeData.nodes[id];if(!n)return 0;let t=n.active===false?0:(Number(n.investment)||0);(n.children||[]).forEach(c=>t+=calcTeamInvestment(c));return t}
 function calcDownline(id){const n=treeData.nodes[id];if(!n)return 0;let t=0;(n.children||[]).forEach(c=>t+=calcTeamInvestment(c));return t}
@@ -443,16 +443,16 @@ function render(){
     document.getElementById('statNodes').textContent=Object.keys(treeData.nodes).length;
     if(rootId){
         document.getElementById('statMembers').textContent=countActive(rootId);
-        document.getElementById('statInvest').textContent=formatNum(calcTeamInvestment(rootId))+'à§³';
+        document.getElementById('statInvest').textContent=formatNum(calcTeamInvestment(rootId))+'৳';
     }else{
         document.getElementById('statMembers').textContent='0';
-        document.getElementById('statInvest').textContent='0à§³';
+        document.getElementById('statInvest').textContent='0৳';
     }
     let empty=viewport.querySelector('.empty-state');
     if(!rootId){
         canvas.innerHTML='';
         if(!empty){empty=document.createElement('div');empty.className='empty-state';viewport.appendChild(empty)}
-        empty.innerHTML='ðŸŒ³ à¦à¦–à¦¨à§‹ à¦•à§‹à¦¨à§‹ à¦Ÿà§à¦°à¦¿ à¦¨à§‡à¦‡à¥¤<br>â˜° à¦®à§‡à¦¨à§ â†’ "à¦°à§à¦Ÿ à¦¨à§‹à¦¡ à¦¯à§‹à¦—"';
+        empty.innerHTML='🌳 এখনো কোনো ট্রি নেই।<br>☰ মেনু → "রুট নোড যোগ"';
         renderBlocks(null,null);
         return;
     }
@@ -489,29 +489,29 @@ function render(){
         const inactiveClass=node.active===false?' inactive':'';
         const rootClass=node.parentId===null?' root':'';
         const topClass=(id===topId&&node.parentId!==null)?' top-performer':'';
-        const dateStr=node.joinDate?formatDateShort(node.joinDate):'â€”';
+        const dateStr=node.joinDate?formatDateShort(node.joinDate):'—';
         const levelLabel=pos.depth===0?'ROOT':'L'+pos.depth;
-        const crown=(id===topId&&node.parentId!==null)?'<div class="crown-badge">ðŸ‘‘</div>':'';
+        const crown=(id===topId&&node.parentId!==null)?'<div class="crown-badge">👑</div>':'';
         const hasKids=node.children&&node.children.length;
-        const collapseBtn=hasKids?`<button class="collapse-btn" onclick="toggleCollapse('${id}')" title="à¦²à§à¦•à¦¾à¦¨/à¦¦à§‡à¦–à¦¾à¦¨">${node.collapsed?'+':'âˆ’'}</button>`:'';
-        const noteIcon=node.note?'<span class="note-icon" title="à¦¨à§‹à¦Ÿ à¦†à¦›à§‡">ðŸ“</span>':'';
+        const collapseBtn=hasKids?`<button class="collapse-btn" onclick="toggleCollapse('${id}')" title="লুকান/দেখান">${node.collapsed?'+':'−'}</button>`:'';
+        const noteIcon=node.note?'<span class="note-icon" title="নোট আছে">📝</span>':'';
         nodesHtml+=`<div class="node${inactiveClass}${rootClass}${topClass}"
             style="left:${pos.x}px;top:${pos.y}px;background:${colors.bg};border-color:${colors.border};border-width:${colors.borderWidth}px;color:${colors.text};">
             ${crown}${collapseBtn}
-            <button class="edit-btn" onclick="openEditNode('${id}')">âœŽ</button>
-            <div class="n-code">${escapeHtml(node.xmCode||'â€”')}</div>
+            <button class="edit-btn" onclick="openEditNode('${id}')">✎</button>
+            <div class="n-code">${escapeHtml(node.xmCode||'—')}</div>
             <div class="n-name">${escapeHtml(node.name)}</div>
             <div class="n-meta-row">
-                <span class="val-left"><span class="lbl">à¦¨à¦¿à¦œà§‡ </span>${formatNum(own)}à§³</span>
-                <span class="val-right"><span class="lbl">à¦¡à¦¾à¦‰à¦¨ </span>${formatNum(down)}à§³</span>
+                <span class="val-left"><span class="lbl">নিজে </span>${formatNum(own)}৳</span>
+                <span class="val-right"><span class="lbl">ডাউন </span>${formatNum(down)}৳</span>
             </div>
             <div class="n-meta-row">
                 <span class="val-left">${levelLabel}${noteIcon}</span>
                 <span class="val-right">${dateStr}</span>
             </div>
             <div class="n-branch">
-                <button class="branch-left" onclick="openAddNode('${id}','left')">â—€ +</button>
-                <button class="branch-right" onclick="openAddNode('${id}','right')">+ â–¶</button>
+                <button class="branch-left" onclick="openAddNode('${id}','left')">◀ +</button>
+                <button class="branch-right" onclick="openAddNode('${id}','right')">+ ▶</button>
             </div>
         </div>`;
     });
@@ -522,7 +522,7 @@ function render(){
     renderBlocks(rootId,topId);
 }
 
-/* ---------- à¦¬à§à¦²à¦• à¦­à¦¿à¦‰ ---------- */
+/* ---------- ব্লক ভিউ ---------- */
 const sideOf=n=>n.side==='left'?'left':'right';
 function sortedKids(n){
     const kids=(n.children||[]).filter(c=>treeData.nodes[c]).map(c=>treeData.nodes[c]);
@@ -541,45 +541,45 @@ function blockItemHtml(k,st,topId,depth){
     const own=Number(k.investment)||0;
     const cnt=st.cnt[k.id]||0;
     const cls=(sideOf(k)==='left'?'L':'R')+(k.active===false?' inactive':'')+(k.id===topId?' top':'');
-    const crown=k.id===topId?' ðŸ‘‘':'';
-    const note=k.note?' ðŸ“':'';
-    const go=cnt?`<span class="go" onclick="jumpBlock('b-${k.id}')">â†“ ${cnt} à¦œà¦¨</span>`:`<span class="no">à¦¨à¦¿à¦šà§‡ à¦•à§‡à¦‰ à¦¨à§‡à¦‡</span>`;
+    const crown=k.id===topId?' 👑':'';
+    const note=k.note?' 📝':'';
+    const go=cnt?`<span class="go" onclick="jumpBlock('b-${k.id}')">↓ ${cnt} জন</span>`:`<span class="no">নিচে কেউ নেই</span>`;
     return `<div class="bk-it ${cls}" id="i-${k.id}">
-        <div class="top-row"><span class="code">${escapeHtml(k.xmCode||'â€”')}${crown}${note}</span><button class="ed" onclick="openEditNode('${k.id}')">âœŽ</button></div>
+        <div class="top-row"><span class="code">${escapeHtml(k.xmCode||'—')}${crown}${note}</span><button class="ed" onclick="openEditNode('${k.id}')">✎</button></div>
         <div class="nm">${escapeHtml(k.name)}</div>
-        <div class="inf" style="display:flex;justify-content:space-between;gap:4px"><span>à¦¨à¦¿à¦œà§‡ ${formatNum(own)}à§³</span><span>à¦¡à¦¾à¦‰à¦¨ ${formatNum(st.down[k.id]||0)}à§³</span></div>
+        <div class="inf" style="display:flex;justify-content:space-between;gap:4px"><span>নিজে ${formatNum(own)}৳</span><span>ডাউন ${formatNum(st.down[k.id]||0)}৳</span></div>
         <div class="inf" style="display:flex;justify-content:space-between;gap:4px"><span>L${depth}</span><span>${formatDateShort(k.joinDate)}</span></div>
         ${go}
     </div>`;
 }
 function blockColHtml(kids,side,st,topId,depth){
     const list=kids.filter(k=>sideOf(k)===side);
-    const title=side==='left'?'â—€ à¦¬à¦¾à¦®':'à¦¡à¦¾à¦¨ â–¶';
+    const title=side==='left'?'◀ বাম':'ডান ▶';
     const cls=side==='left'?'L':'R';
-    const rows=list.length?list.map(k=>blockItemHtml(k,st,topId,depth)).join(''):'<div class="bk-emp">à¦–à¦¾à¦²à¦¿</div>';
-    return `<div class="bk-col"><div class="bk-h ${cls}"><span>${title}</span><span>${list.length} à¦œà¦¨</span></div>${rows}</div>`;
+    const rows=list.length?list.map(k=>blockItemHtml(k,st,topId,depth)).join(''):'<div class="bk-emp">খালি</div>';
+    return `<div class="bk-col"><div class="bk-h ${cls}"><span>${title}</span><span>${list.length} জন</span></div>${rows}</div>`;
 }
 function blockHtml(id,st,topId){
     const n=treeData.nodes[id];
     const anc=[];let p=n.parentId?treeData.nodes[n.parentId]:null;
     while(p){anc.unshift(p);p=p.parentId?treeData.nodes[p.parentId]:null}
-    const arrow=s=>s==='left'?'â—€ ':(s==='right'?'â–¶ ':'');
-    const crumbs=anc.map(a=>`<a onclick="jumpBlock('b-${a.id}')">${arrow(a.side)}${escapeHtml(a.xmCode||'â€”')}</a>`).join(' â€º ');
-    const path=anc.length?`<div class="bk-path">à¦ªà¦¥: ${crumbs} â€º <b>${arrow(n.side)}${escapeHtml(n.xmCode||'â€”')}</b></div>`:'';
+    const arrow=s=>s==='left'?'◀ ':(s==='right'?'▶ ':'');
+    const crumbs=anc.map(a=>`<a onclick="jumpBlock('b-${a.id}')">${arrow(a.side)}${escapeHtml(a.xmCode||'—')}</a>`).join(' › ');
+    const path=anc.length?`<div class="bk-path">পথ: ${crumbs} › <b>${arrow(n.side)}${escapeHtml(n.xmCode||'—')}</b></div>`:'';
     const chipCls=n.parentId===null?'root':(sideOf(n)==='left'?'L':'R');
-    const level=n.parentId===null?'à¦°à§à¦Ÿ':'à¦²à§‡à¦­à§‡à¦² '+anc.length;
+    const level=n.parentId===null?'রুট':'লেভেল '+anc.length;
     const kids=sortedKids(n);
-    const up=n.parentId?`<button class="up" onclick="jumpBlock('i-${n.id}')">â†‘ à¦‰à¦ªà¦°à§‡</button>`:'';
+    const up=n.parentId?`<button class="up" onclick="jumpBlock('i-${n.id}')">↑ উপরে</button>`:'';
     return `<div class="bk" id="b-${n.id}">${path}
-        <div class="bk-par"><span class="bk-chip ${chipCls}">${escapeHtml(n.xmCode||'â€”')} Â· ${escapeHtml(n.name)}</span>
-        <span class="bk-meta">${level} Â· à¦¨à¦¿à¦šà§‡ ${st.cnt[id]} à¦œà¦¨ Â· à¦¨à¦¿à¦œà§‡ ${formatNum(Number(n.investment)||0)}à§³ Â· à¦¡à¦¾à¦‰à¦¨ ${formatNum(st.down[id])}à§³</span></div>
-        <div class="bk-acts"><button class="bl" onclick="openAddNode('${n.id}','left')">â—€ à¦¬à¦¾à¦®à§‡ à¦¯à§‹à¦—</button><button class="br" onclick="openAddNode('${n.id}','right')">à¦¡à¦¾à¦¨à§‡ à¦¯à§‹à¦— â–¶</button>${up}</div>
+        <div class="bk-par"><span class="bk-chip ${chipCls}">${escapeHtml(n.xmCode||'—')} · ${escapeHtml(n.name)}</span>
+        <span class="bk-meta">${level} · নিচে ${st.cnt[id]} জন · নিজে ${formatNum(Number(n.investment)||0)}৳ · ডাউন ${formatNum(st.down[id])}৳</span></div>
+        <div class="bk-acts"><button class="bl" onclick="openAddNode('${n.id}','left')">◀ বামে যোগ</button><button class="br" onclick="openAddNode('${n.id}','right')">ডানে যোগ ▶</button>${up}</div>
         <div class="bk-cols">${blockColHtml(kids,'left',st,topId,anc.length+1)}${blockColHtml(kids,'right',st,topId,anc.length+1)}</div>
     </div>`;
 }
 function renderBlocks(rootId,topId){
     const box=document.getElementById('blockInner');
-    if(!rootId){box.innerHTML='<div class="bk-empty">ðŸŒ³ à¦à¦–à¦¨à§‹ à¦•à§‹à¦¨à§‹ à¦Ÿà§à¦°à¦¿ à¦¨à§‡à¦‡à¥¤<br>â˜° à¦®à§‡à¦¨à§ â†’ "à¦°à§à¦Ÿ à¦¨à§‹à¦¡ à¦¯à§‹à¦—"</div>';return}
+    if(!rootId){box.innerHTML='<div class="bk-empty">🌳 এখনো কোনো ট্রি নেই।<br>☰ মেনু → "রুট নোড যোগ"</div>';return}
     const st=buildStats(rootId);
     const order=[];
     (function walk(id){
@@ -596,7 +596,7 @@ function jumpBlock(elId){
 }
 function applyView(){
     document.body.classList.toggle('view-block',viewMode==='block');
-    document.getElementById('viewToggleBtn').innerHTML=viewMode==='block'?'ðŸŒ³ à¦›à¦¡à¦¼à¦¾à¦¨à§‹ à¦Ÿà§à¦°à¦¿ à¦¦à§‡à¦–à§à¦¨':'ðŸ§± à¦¬à§à¦²à¦• à¦­à¦¿à¦‰ (à¦¨à¦¿à¦šà§‡ à¦¬à¦¾à¦¡à¦¼à¦¾)';
+    document.getElementById('viewToggleBtn').innerHTML=viewMode==='block'?'🌳 ছড়ানো ট্রি দেখুন':'🧱 ব্লক ভিউ (নিচে বাড়া)';
 }
 function toggleView(){
     viewMode=viewMode==='block'?'tree':'block';
@@ -612,7 +612,7 @@ function focusAny(id){
     }else focusOnNode(id);
 }
 
-function toggleCollapse(id){const n=treeData.nodes[id];if(!n)return;n.collapsed=!n.collapsed;save();toast(n.collapsed?'à¦šà¦¾à¦‡à¦²à§à¦¡ à¦²à§à¦•à¦¾à¦¨à§‹ à¦¹à¦²à§‹à¥¤':'à¦šà¦¾à¦‡à¦²à§à¦¡ à¦¦à§‡à¦–à¦¾à¦¨à§‹ à¦¹à¦²à§‹à¥¤')}
+function toggleCollapse(id){const n=treeData.nodes[id];if(!n)return;n.collapsed=!n.collapsed;save();toast(n.collapsed?'চাইল্ড লুকানো হলো।':'চাইল্ড দেখানো হলো।')}
 function collapseAll(collapsed){Object.values(treeData.nodes).forEach(n=>{if(n.children&&n.children.length)n.collapsed=collapsed});save()}
 function autoFitNames(){document.querySelectorAll('.node .n-name').forEach(el=>{let size=12;el.style.fontSize=size+'px';let g=0;while(el.scrollHeight>el.clientHeight&&size>7.5&&g<24){size-=0.5;el.style.fontSize=size+'px';g++}})}
 function applyTransform(){const canvas=document.getElementById('canvas');canvas.style.transform=`translate(${panX}px, ${panY}px) scale(${zoom})`;const vp=document.getElementById('viewport');if(zoom<0.72)vp.classList.add('low-zoom');else vp.classList.remove('low-zoom')}
@@ -642,18 +642,18 @@ function doSearch(q){
     q=q.trim().toLowerCase();const box=document.getElementById('searchResults');
     if(!q){box.innerHTML='';return}
     const r=[];Object.values(treeData.nodes).forEach(n=>{const c=(n.xmCode||'').toLowerCase(),nm=(n.name||'').toLowerCase();if(c.includes(q)||nm.includes(q))r.push(n)});
-    if(!r.length){box.innerHTML='<p style="font-size:12.5px;color:var(--muted);text-align:center;padding:8px">à¦•à¦¿à¦›à§ à¦ªà¦¾à¦“à¦¯à¦¼à¦¾ à¦¯à¦¾à¦¯à¦¼à¦¨à¦¿à¥¤</p>';return}
-    box.innerHTML=r.slice(0,20).map(n=>`<div class="search-result-item" onclick="focusFromSearch('${n.id}')"><span><span class="code">${escapeHtml(n.xmCode||'â€”')}</span><span style="color:var(--muted);margin-left:8px">${escapeHtml(n.name)}</span></span><span style="font-size:11.5px;color:var(--muted);font-weight:700">${formatNum(calcTeamInvestment(n.id))}à§³</span></div>`).join('');
+    if(!r.length){box.innerHTML='<p style="font-size:12.5px;color:var(--muted);text-align:center;padding:8px">কিছু পাওয়া যায়নি।</p>';return}
+    box.innerHTML=r.slice(0,20).map(n=>`<div class="search-result-item" onclick="focusFromSearch('${n.id}')"><span><span class="code">${escapeHtml(n.xmCode||'—')}</span><span style="color:var(--muted);margin-left:8px">${escapeHtml(n.name)}</span></span><span style="font-size:11.5px;color:var(--muted);font-weight:700">${formatNum(calcTeamInvestment(n.id))}৳</span></div>`).join('');
 }
 function focusFromSearch(id){toggleSearch();setTimeout(()=>focusAny(id),180)}
 function renderChart(){
     const box=document.getElementById('chartBox');const rootId=findRootId();
-    if(!rootId){box.innerHTML='<p style="font-size:12.5px;color:var(--muted);text-align:center">à¦Ÿà§à¦°à¦¿ à¦¨à§‡à¦‡à¥¤</p>';return}
+    if(!rootId){box.innerHTML='<p style="font-size:12.5px;color:var(--muted);text-align:center">ট্রি নেই।</p>';return}
     const root=treeData.nodes[rootId];const kids=(root.children||[]).map(c=>treeData.nodes[c]).filter(Boolean);
-    if(!kids.length){box.innerHTML='<p style="font-size:12.5px;color:var(--muted);text-align:center">à¦°à§à¦Ÿà§‡ à¦šà¦¾à¦‡à¦²à§à¦¡ à¦¨à§‡à¦‡à¥¤</p>';return}
+    if(!kids.length){box.innerHTML='<p style="font-size:12.5px;color:var(--muted);text-align:center">রুটে চাইল্ড নেই।</p>';return}
     const data=kids.map(k=>({name:k.name,code:k.xmCode,value:calcTeamInvestment(k.id),side:k.side||'right'})).sort((a,b)=>b.value-a.value);
     const max=Math.max(...data.map(d=>d.value),1);
-    box.innerHTML=data.map(d=>{const pct=(d.value/max*100).toFixed(1);const color=d.side==='left'?'#dc9a3b':'#3b8bdc';return`<div class="bar-row"><div class="bar-label"><span><b>${escapeHtml(d.code||'â€”')}</b> <span style="color:var(--muted)">${escapeHtml(d.name)}</span></span><span style="font-weight:700">${formatNum(d.value)}à§³</span></div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div></div>`}).join('');
+    box.innerHTML=data.map(d=>{const pct=(d.value/max*100).toFixed(1);const color=d.side==='left'?'#dc9a3b':'#3b8bdc';return`<div class="bar-row"><div class="bar-label"><span><b>${escapeHtml(d.code||'—')}</b> <span style="color:var(--muted)">${escapeHtml(d.name)}</span></span><span style="font-weight:700">${formatNum(d.value)}৳</span></div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}"></div></div></div>`}).join('');
 }
 function renderRecent(){
     const sec=document.getElementById('recentSection');const box=document.getElementById('recentBox');
@@ -662,7 +662,7 @@ function renderRecent(){
     sec.style.display='block';
     box.innerHTML=valid.map(id=>{
         const n=treeData.nodes[id];
-        return `<div class="recent-item" onclick="closeModal('menuModal');setTimeout(()=>focusAny('${id}'),150)"><span><span style="font-weight:800;color:var(--trunk)">${escapeHtml(n.xmCode||'â€”')}</span> <span style="color:var(--muted);margin-left:6px">${escapeHtml(n.name)}</span></span><span style="font-size:11px;color:var(--muted)">â†’</span></div>`;
+        return `<div class="recent-item" onclick="closeModal('menuModal');setTimeout(()=>focusAny('${id}'),150)"><span><span style="font-weight:800;color:var(--trunk)">${escapeHtml(n.xmCode||'—')}</span> <span style="color:var(--muted);margin-left:6px">${escapeHtml(n.name)}</span></span><span style="font-size:11px;color:var(--muted)">→</span></div>`;
     }).join('');
 }
 function setupPanZoom(){
@@ -682,20 +682,20 @@ function setupPanZoom(){
     },{passive:true});
     vp.addEventListener('touchend',()=>{dragging=false;pinchStartDist=0});
 }
-function toggleDark(){document.body.classList.toggle('dark');const d=document.body.classList.contains('dark');localStorage.setItem(DARK_KEY,d?'1':'0');document.getElementById('darkToggleBtn').innerHTML=d?'â˜€ï¸ à¦²à¦¾à¦‡à¦Ÿ à¦®à§‹à¦¡':'ðŸŒ™ à¦¡à¦¾à¦°à§à¦• à¦®à§‹à¦¡';render()}
-function initDark(){if(localStorage.getItem(DARK_KEY)==='1'){document.body.classList.add('dark');document.getElementById('darkToggleBtn').innerHTML='â˜€ï¸ à¦²à¦¾à¦‡à¦Ÿ à¦®à§‹à¦¡'}}
-function toggleCompact(){document.body.classList.toggle('compact');const c=document.body.classList.contains('compact');localStorage.setItem(COMPACT_KEY,c?'1':'0');document.getElementById('compactToggleBtn').innerHTML=c?'ðŸ“ à¦¸à§à¦¬à¦¾à¦­à¦¾à¦¬à¦¿à¦• à¦­à¦¿à¦‰':'ðŸ“ à¦•à¦®à¦ªà§à¦¯à¦¾à¦•à§à¦Ÿ à¦­à¦¿à¦‰';render()}
-function initCompact(){if(localStorage.getItem(COMPACT_KEY)==='1'){document.body.classList.add('compact');document.getElementById('compactToggleBtn').innerHTML='ðŸ“ à¦¸à§à¦¬à¦¾à¦­à¦¾à¦¬à¦¿à¦• à¦­à¦¿à¦‰'}}
+function toggleDark(){document.body.classList.toggle('dark');const d=document.body.classList.contains('dark');localStorage.setItem(DARK_KEY,d?'1':'0');document.getElementById('darkToggleBtn').innerHTML=d?'☀️ লাইট মোড':'🌙 ডার্ক মোড';render()}
+function initDark(){if(localStorage.getItem(DARK_KEY)==='1'){document.body.classList.add('dark');document.getElementById('darkToggleBtn').innerHTML='☀️ লাইট মোড'}}
+function toggleCompact(){document.body.classList.toggle('compact');const c=document.body.classList.contains('compact');localStorage.setItem(COMPACT_KEY,c?'1':'0');document.getElementById('compactToggleBtn').innerHTML=c?'📐 স্বাভাবিক ভিউ':'📐 কমপ্যাক্ট ভিউ';render()}
+function initCompact(){if(localStorage.getItem(COMPACT_KEY)==='1'){document.body.classList.add('compact');document.getElementById('compactToggleBtn').innerHTML='📐 স্বাভাবিক ভিউ'}}
 function openMenu(){
     const r=findRootId();
     document.getElementById('statNodes').textContent=Object.keys(treeData.nodes).length;
-    if(r){document.getElementById('statMembers').textContent=countActive(r);document.getElementById('statInvest').textContent=formatNum(calcTeamInvestment(r))+'à§³'}
-    else{document.getElementById('statMembers').textContent='0';document.getElementById('statInvest').textContent='0à§³'}
+    if(r){document.getElementById('statMembers').textContent=countActive(r);document.getElementById('statInvest').textContent=formatNum(calcTeamInvestment(r))+'৳'}
+    else{document.getElementById('statMembers').textContent='0';document.getElementById('statInvest').textContent='0৳'}
     renderChart();renderRecent();updateBackupStatus();
     document.getElementById('menuModal').classList.add('open');
 }
 function toggleGuide(){document.getElementById('guideBox').classList.toggle('open')}
-function clearAll(){if(!Object.keys(treeData.nodes).length){toast('à¦®à§à¦›à¦¤à§‡ à¦•à¦¿à¦›à§ à¦¨à§‡à¦‡à¥¤');return}if(!confirm('à¦¸à¦¬ à¦¨à§‹à¦¡ à¦®à§à¦›à§‡ à¦«à§‡à¦²à¦¬à§‡à¦¨?'))return;pushHistory();treeData={nodes:{}};recentViewed=[];localStorage.setItem(RECENT_KEY,'[]');save();closeModal('menuModal');toast('à¦¸à¦¬ à¦®à§à¦›à§‡ à¦«à§‡à¦²à¦¾ à¦¹à¦¯à¦¼à§‡à¦›à§‡à¥¤')}
+function clearAll(){if(!Object.keys(treeData.nodes).length){toast('মুছতে কিছু নেই।');return}if(!confirm('সব নোড মুছে ফেলবেন?'))return;pushHistory();treeData={nodes:{}};recentViewed=[];localStorage.setItem(RECENT_KEY,'[]');save();closeModal('menuModal');toast('সব মুছে ফেলা হয়েছে।')}
 function openAddNode(parentId,side){
     document.getElementById('addErr').style.display='none';
     document.getElementById('addName').value='';document.getElementById('addXmCode').value='';
@@ -703,13 +703,13 @@ function openAddNode(parentId,side){
     document.getElementById('addInvDate').value=todayISO();
     document.getElementById('addNote').value='';
     if(!parentId){
-        document.getElementById('addModalTitle').textContent='à¦°à§à¦Ÿ à¦¨à§‹à¦¡ à¦¯à§‹à¦—';
+        document.getElementById('addModalTitle').textContent='রুট নোড যোগ';
         document.getElementById('parentInfoField').style.display='none';
         document.getElementById('addModal').dataset.parentId='';document.getElementById('addModal').dataset.side='';
     }else{
-        const p=treeData.nodes[parentId];if(!p){alert('à¦ªà§à¦¯à¦¾à¦°à§‡à¦¨à§à¦Ÿ à¦ªà¦¾à¦“à¦¯à¦¼à¦¾ à¦¯à¦¾à¦¯à¦¼à¦¨à¦¿!');return}
-        const lbl=side==='left'?' (à¦¬à¦¾à¦®à§‡)':' (à¦¡à¦¾à¦¨à§‡)';
-        document.getElementById('addModalTitle').textContent='à¦šà¦¾à¦‡à¦²à§à¦¡ à¦¯à§‹à¦—'+lbl;
+        const p=treeData.nodes[parentId];if(!p){alert('প্যারেন্ট পাওয়া যায়নি!');return}
+        const lbl=side==='left'?' (বামে)':' (ডানে)';
+        document.getElementById('addModalTitle').textContent='চাইল্ড যোগ'+lbl;
         document.getElementById('parentInfoField').style.display='block';
         document.getElementById('parentDisplay').value=`${p.name} [${p.xmCode||''}]`;
         document.getElementById('addModal').dataset.parentId=parentId;
@@ -728,32 +728,32 @@ function saveNewNode(){
     const invDate=document.getElementById('addInvDate').value||joinDate||todayISO();
     const note=document.getElementById('addNote').value.trim();
     const errEl=document.getElementById('addErr');errEl.style.display='none';
-    if(!xmCode){errEl.textContent='XM à¦•à§‹à¦¡ à¦¦à¦¿à¦¤à§‡ à¦¹à¦¬à§‡à¥¤';errEl.style.display='block';return}
-    if(!name){errEl.textContent='à¦¨à¦¾à¦® à¦¦à¦¿à¦¤à§‡ à¦¹à¦¬à§‡à¥¤';errEl.style.display='block';return}
+    if(!xmCode){errEl.textContent='XM কোড দিতে হবে।';errEl.style.display='block';return}
+    if(!name){errEl.textContent='নাম দিতে হবে।';errEl.style.display='block';return}
     const dup=Object.values(treeData.nodes).find(n=>(n.xmCode||'').trim().toLowerCase()===xmCode.toLowerCase());
-    if(dup){errEl.textContent=`"${xmCode}" à¦•à§‹à¦¡à¦Ÿà¦¿ "${dup.name}"-à¦à¦° à¦œà¦¨à§à¦¯ à¦¬à§à¦¯à¦¬à¦¹à§ƒà¦¤à¥¤`;errEl.style.display='block';return}
+    if(dup){errEl.textContent=`"${xmCode}" কোডটি "${dup.name}"-এর জন্য ব্যবহৃত।`;errEl.style.display='block';return}
     pushHistory();
     const newId='n'+Date.now()+Math.floor(Math.random()*1000);
     const investments=investment>0?[{amount:investment,date:invDate}]:[];
     if(!parentId){
-        if(findRootId()){errEl.textContent='à¦°à§à¦Ÿ à¦¨à§‹à¦¡ à¦‡à¦¤à¦¿à¦®à¦§à§à¦¯à§‡ à¦†à¦›à§‡à¥¤';errEl.style.display='block';history.pop();return}
+        if(findRootId()){errEl.textContent='রুট নোড ইতিমধ্যে আছে।';errEl.style.display='block';history.pop();return}
         treeData.nodes[newId]={id:newId,name,xmCode,investment,investments,joinDate,note,active:true,parentId:null,side:null,children:[],collapsed:false};
     }else{
         const p=treeData.nodes[parentId];
-        if(!p){errEl.textContent='à¦ªà§à¦¯à¦¾à¦°à§‡à¦¨à§à¦Ÿ à¦ªà¦¾à¦“à¦¯à¦¼à¦¾ à¦¯à¦¾à¦¯à¦¼à¦¨à¦¿à¥¤';errEl.style.display='block';history.pop();return}
+        if(!p){errEl.textContent='প্যারেন্ট পাওয়া যায়নি।';errEl.style.display='block';history.pop();return}
         treeData.nodes[newId]={id:newId,name,xmCode,investment,investments,joinDate,note,active:true,parentId,side,children:[],collapsed:false};
         p.children.push(newId);if(p.collapsed)p.collapsed=false;
     }
-    save();closeModal('addModal');toast('à¦¯à§‹à¦— à¦•à¦°à¦¾ à¦¹à¦¯à¦¼à§‡à¦›à§‡à¥¤')
+    save();closeModal('addModal');toast('যোগ করা হয়েছে।')
 }
 
-/* ---------- à¦à¦¡à¦¿à¦Ÿ + à¦‡à¦¨à¦­à§‡à¦¸à§à¦Ÿ à¦¤à¦¾à¦²à¦¿à¦•à¦¾ ---------- */
+/* ---------- এডিট + ইনভেস্ট তালিকা ---------- */
 function renderInvRows(){
     const box=document.getElementById('editInvList');
     box.innerHTML=editInvs.length?editInvs.map((x,i)=>`<div class="inv-row">
-        <input type="number" inputmode="numeric" placeholder="à§³ à¦Ÿà¦¾à¦•à¦¾" value="${x.amount||''}" oninput="editInvs[${i}].amount=parseNum(this.value);updInvTotal()">
+        <input type="number" inputmode="numeric" placeholder="৳ টাকা" value="${x.amount||''}" oninput="editInvs[${i}].amount=parseNum(this.value);updInvTotal()">
         <input type="date" value="${x.date||''}" onchange="editInvs[${i}].date=this.value">
-        <button class="inv-del" onclick="removeInvRow(${i})">âœ•</button></div>`).join(''):'<div class="team-info">à¦à¦–à¦¨à§‹ à¦•à§‹à¦¨à§‹ à¦‡à¦¨à¦­à§‡à¦¸à§à¦Ÿ à¦¨à§‡à¦‡à¥¤</div>';
+        <button class="inv-del" onclick="removeInvRow(${i})">✕</button></div>`).join(''):'<div class="team-info">এখনো কোনো ইনভেস্ট নেই।</div>';
     updInvTotal();
 }
 function addInvRow(){editInvs.push({amount:0,date:todayISO()});renderInvRows()}
@@ -761,7 +761,7 @@ function removeInvRow(i){editInvs.splice(i,1);renderInvRows()}
 function updInvTotal(){
     const t=editInvs.reduce((s,x)=>s+(Number(x.amount)||0),0);
     const c=editInvs.filter(x=>Number(x.amount)>0).length;
-    document.getElementById('editInvTotal').textContent=`à¦®à§‹à¦Ÿ à¦¨à¦¿à¦œà§‡à¦° à¦‡à¦¨à¦­à§‡à¦¸à§à¦Ÿ: ${formatNum(t)}à§³ Â· ${c} à¦¬à¦¾à¦°`;
+    document.getElementById('editInvTotal').textContent=`মোট নিজের ইনভেস্ট: ${formatNum(t)}৳ · ${c} বার`;
 }
 function openEditNode(id){
     const n=treeData.nodes[id];if(!n)return;
@@ -773,7 +773,7 @@ function openEditNode(id){
     document.getElementById('editJoinDate').value=n.joinDate||'';
     document.getElementById('editNote').value=n.note||'';
     document.getElementById('editActive').checked=n.active!==false;
-    document.getElementById('editTeamInfo').textContent=`à¦¨à¦¿à¦œà§‡à¦¸à¦¹ à¦¸à¦•à§à¦°à¦¿à¦¯à¦¼: ${countActive(id)} Â· à¦Ÿà¦¿à¦® à¦®à§‹à¦Ÿ: ${formatNum(calcTeamInvestment(id))}à§³`;
+    document.getElementById('editTeamInfo').textContent=`নিজেসহ সক্রিয়: ${countActive(id)} · টিম মোট: ${formatNum(calcTeamInvestment(id))}৳`;
     document.getElementById('editModal').classList.add('open');
 }
 function saveEditedNode(){
@@ -785,22 +785,22 @@ function saveEditedNode(){
     const note=document.getElementById('editNote').value.trim();
     const active=document.getElementById('editActive').checked;
     const errEl=document.getElementById('editErr');errEl.style.display='none';
-    if(!xmCode){errEl.textContent='XM à¦•à§‹à¦¡ à¦¦à¦¿à¦¤à§‡ à¦¹à¦¬à§‡à¥¤';errEl.style.display='block';return}
-    if(!name){errEl.textContent='à¦¨à¦¾à¦® à¦¦à¦¿à¦¤à§‡ à¦¹à¦¬à§‡à¥¤';errEl.style.display='block';return}
+    if(!xmCode){errEl.textContent='XM কোড দিতে হবে।';errEl.style.display='block';return}
+    if(!name){errEl.textContent='নাম দিতে হবে।';errEl.style.display='block';return}
     const dup=Object.values(treeData.nodes).find(x=>x.id!==id&&(x.xmCode||'').trim().toLowerCase()===xmCode.toLowerCase());
-    if(dup){errEl.textContent=`"${xmCode}" "${dup.name}"-à¦à¦° à¦œà¦¨à§à¦¯ à¦¬à§à¦¯à¦¬à¦¹à§ƒà¦¤à¥¤`;errEl.style.display='block';return}
+    if(dup){errEl.textContent=`"${xmCode}" "${dup.name}"-এর জন্য ব্যবহৃত।`;errEl.style.display='block';return}
     pushHistory();
     n.xmCode=xmCode;n.name=name;n.joinDate=joinDate;n.note=note;n.active=active;
     n.investments=editInvs.map(x=>({amount:Number(x.amount)||0,date:x.date||''}));
     syncInv(n);
-    save();closeModal('editModal');toast('à¦†à¦ªà¦¡à§‡à¦Ÿ à¦¹à¦¯à¦¼à§‡à¦›à§‡à¥¤')
+    save();closeModal('editModal');toast('আপডেট হয়েছে।')
 }
 function addChildFromEdit(side){const id=document.getElementById('editId').value;closeModal('editModal');openAddNode(id,side)}
 function deleteNode(){
     const id=document.getElementById('editId').value;
     const n=treeData.nodes[id];if(!n)return;
     const isRoot=n.parentId===null;
-    const msg=isRoot&&Object.keys(treeData.nodes).length>1?'à¦à¦Ÿà¦¾ à¦°à§à¦Ÿ â€” à¦®à§à¦›à¦²à§‡ à¦ªà§à¦°à§‹ à¦Ÿà§à¦°à¦¿ à¦®à§à¦›à§‡ à¦¯à¦¾à¦¬à§‡à¥¤ à¦¨à¦¿à¦¶à§à¦šà¦¿à¦¤?':`"${n.name}" à¦“ à¦¤à¦¾à¦° à¦…à¦§à§€à¦¨à¦¸à§à¦¥ à¦¸à¦¬ à¦®à§à¦›à¦¬à§‡à¦¨?`;
+    const msg=isRoot&&Object.keys(treeData.nodes).length>1?'এটা রুট — মুছলে পুরো ট্রি মুছে যাবে। নিশ্চিত?':`"${n.name}" ও তার অধীনস্থ সব মুছবেন?`;
     if(!confirm(msg))return;
     pushHistory();
     function collect(nid,acc){acc.push(nid);(treeData.nodes[nid].children||[]).forEach(c=>collect(c,acc));return acc}
@@ -808,7 +808,7 @@ function deleteNode(){
     if(n.parentId&&treeData.nodes[n.parentId])treeData.nodes[n.parentId].children=treeData.nodes[n.parentId].children.filter(c=>c!==id);
     del.forEach(nid=>delete treeData.nodes[nid]);
     recentViewed=recentViewed.filter(x=>!del.includes(x));localStorage.setItem(RECENT_KEY,JSON.stringify(recentViewed));
-    save();closeModal('editModal');toast('à¦®à§à¦›à§‡ à¦«à§‡à¦²à¦¾ à¦¹à¦¯à¦¼à§‡à¦›à§‡à¥¤')
+    save();closeModal('editModal');toast('মুছে ফেলা হয়েছে।')
 }
 function closeModal(id){document.getElementById(id).classList.remove('open')}
 
@@ -825,12 +825,12 @@ function restoreBackup(e){
     r.onload=ev=>{
         try{
             const d=JSON.parse(ev.target.result);
-            if(!d.nodes){alert('à¦­à§à¦² à¦«à¦¾à¦‡à¦²à¥¤');return}
-            if(!confirm('à¦¬à¦°à§à¦¤à¦®à¦¾à¦¨ à¦Ÿà§à¦°à¦¿ à¦®à§à¦›à§‡ à¦°à¦¿à¦¸à§à¦Ÿà§‹à¦°?'))return;
+            if(!d.nodes){alert('ভুল ফাইল।');return}
+            if(!confirm('বর্তমান ট্রি মুছে রিস্টোর?'))return;
             pushHistory();treeData=d;
             Object.values(treeData.nodes).forEach(normalizeNode);
-            save();toast('à¦°à¦¿à¦¸à§à¦Ÿà§‹à¦° à¦¸à¦®à§à¦ªà¦¨à§à¦¨à¥¤');closeModal('menuModal');
-        }catch(err){alert('à¦«à¦¾à¦‡à¦² à¦ªà¦¡à¦¼à¦¤à§‡ à¦¸à¦®à¦¸à§à¦¯à¦¾à¥¤')}
+            save();toast('রিস্টোর সম্পন্ন।');closeModal('menuModal');
+        }catch(err){alert('ফাইল পড়তে সমস্যা।')}
     };
     r.readAsText(f);e.target.value='';
 }
@@ -853,30 +853,30 @@ function buildCleanWrapper(pad){
     return{wrapper,width,height};
 }
 async function exportPNG(){
-    if(!findRootId()){toast('à¦Ÿà§à¦°à¦¿ à¦¨à§‡à¦‡à¥¤');return}
-    toast('à¦›à¦¬à¦¿ à¦¤à§ˆà¦°à¦¿ à¦¹à¦šà§à¦›à§‡...');
+    if(!findRootId()){toast('ট্রি নেই।');return}
+    toast('ছবি তৈরি হচ্ছে...');
     const prevView=viewMode;
     if(prevView!=='tree'){viewMode='tree';applyView();await new Promise(r=>setTimeout(r,150))}
     const{wrapper,width,height}=buildCleanWrapper(70);
     try{
         const img=await html2canvas(wrapper,{backgroundColor:document.body.classList.contains('dark')?'#0f1613':'#eef2ee',scale:2,logging:false,width,height});
-        img.toBlob(b=>{const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=`Joining_Tree_${new Date().toISOString().slice(0,10)}.png`;a.click();URL.revokeObjectURL(u);toast('PNG à¦¸à§‡à¦­ à¦¹à¦¯à¦¼à§‡à¦›à§‡à¥¤')},'image/png');
-    }catch(e){console.error(e);toast('à¦›à¦¬à¦¿ à¦¤à§ˆà¦°à¦¿ à¦•à¦°à¦¾ à¦¯à¦¾à¦¯à¦¼à¦¨à¦¿à¥¤')}
+        img.toBlob(b=>{const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=`Joining_Tree_${new Date().toISOString().slice(0,10)}.png`;a.click();URL.revokeObjectURL(u);toast('PNG সেভ হয়েছে।')},'image/png');
+    }catch(e){console.error(e);toast('ছবি তৈরি করা যায়নি।')}
     finally{document.body.removeChild(wrapper);if(prevView!=='tree'){viewMode=prevView;applyView()}}
 }
 function exportCSV(){
-    if(!findRootId()){toast('à¦Ÿà§à¦°à¦¿ à¦¨à§‡à¦‡à¥¤');return}
+    if(!findRootId()){toast('ট্রি নেই।');return}
     const rootId=findRootId();const positions=computeLayout(rootId,175);
     const arr=Object.keys(positions).map(id=>({id,pos:positions[id],node:treeData.nodes[id]})).sort((a,b)=>a.pos.depth-b.pos.depth||a.pos.x-b.pos.x);
     const rows=[['XM Code','Name','Level','Side','Own Investment','Downline Investment','Invest Count','Last Invest Date','Investment Details','Join Date','Active','Note']];
     arr.forEach(item=>{const n=item.node;rows.push([n.xmCode||'',n.name||'',item.pos.depth,item.pos.depth===0?'ROOT':(n.side==='left'?'LEFT':'RIGHT'),Number(n.investment)||0,calcDownline(n.id),invCount(n),lastInvDate(n),(n.investments||[]).map(x=>`${x.amount}@${x.date||''}`).join('; '),n.joinDate||'',n.active===false?'No':'Yes',n.note||''])});
     const csv=rows.map(r=>r.map(c=>{const s=String(c);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s}).join(',')).join('\n');
     const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
-    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Joining_Tree_${new Date().toISOString().slice(0,10)}.csv`;a.click();URL.revokeObjectURL(url);toast('CSV à¦¸à§‡à¦­ à¦¹à¦¯à¦¼à§‡à¦›à§‡à¥¤')
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Joining_Tree_${new Date().toISOString().slice(0,10)}.csv`;a.click();URL.revokeObjectURL(url);toast('CSV সেভ হয়েছে।')
 }
 function exportHTML(){
-    if(!findRootId()){toast('à¦Ÿà§à¦°à¦¿ à¦¨à§‡à¦‡à¥¤');return}
-    toast('HTML à¦¤à§ˆà¦°à¦¿ à¦¹à¦šà§à¦›à§‡...');
+    if(!findRootId()){toast('ট্রি নেই।');return}
+    toast('HTML তৈরি হচ্ছে...');
     const G=155,H=50;
     const rootId=findRootId();const positions=computeLayout(rootId,G);const topId=findTopPerformer();
     let minX=Infinity,minY=Infinity,maxX=-Infinity,maxY=-Infinity;
@@ -902,20 +902,20 @@ function exportHTML(){
         const sideForColor=node.parentId===null?'center':(node.side||'right');
         const c=nodeColorHex(sideForColor,pos.depth);
         const own=Number(node.investment)||0,down=calcDownline(id);
-        const dateStr=node.joinDate?formatDateShort(node.joinDate):'â€”';
+        const dateStr=node.joinDate?formatDateShort(node.joinDate):'—';
         const levelLabel=pos.depth===0?'ROOT':'L'+pos.depth;
         const inactiveStyle=node.active===false?'opacity:.42;filter:grayscale(.75);':'';
-        const crown=(id===topId&&node.parentId!==null)?'<div style="position:absolute;top:-13px;left:50%;transform:translateX(-50%);font-size:18px;">ðŸ‘‘</div>':'';
+        const crown=(id===topId&&node.parentId!==null)?'<div style="position:absolute;top:-13px;left:50%;transform:translateX(-50%);font-size:18px;">👑</div>':'';
         const borderW=node.parentId===null?3:2;
         const leftPx=offX+pos.x,topPx=offY+pos.y;
-        const noteIcon=node.note?' <span style="font-size:11px;opacity:.9;" title="'+escapeHtml(node.note)+'">ðŸ“</span>':'';
+        const noteIcon=node.note?' <span style="font-size:11px;opacity:.9;" title="'+escapeHtml(node.note)+'">📝</span>':'';
         nodesHtml+=`<div style="position:absolute;left:${leftPx}px;top:${topPx}px;transform:translate(-50%,-50%);width:${NODE_W}px;border:${borderW}px solid ${c.border};border-radius:12px;padding:6px 8px 8px 8px;text-align:center;background:${c.bg};color:${c.text};font-family:'Hind Siliguri',sans-serif;${inactiveStyle}">
             ${crown}
-            <div style="font-size:15px;font-weight:800;letter-spacing:.3px;">${escapeHtml(node.xmCode||'â€”')}</div>
+            <div style="font-size:15px;font-weight:800;letter-spacing:.3px;">${escapeHtml(node.xmCode||'—')}</div>
             <div style="font-size:12px;font-weight:600;line-height:1.15;margin-top:2px;">${escapeHtml(node.name)}</div>
             <div style="display:flex;justify-content:space-between;margin-top:3px;font-size:10.5px;font-weight:700;">
-                <span><span style="opacity:.7;font-size:9.5px;">à¦¨à¦¿à¦œà§‡ </span>${formatNum(own)}à§³</span>
-                <span><span style="opacity:.7;font-size:9.5px;">à¦¡à¦¾à¦‰à¦¨ </span>${formatNum(down)}à§³</span>
+                <span><span style="opacity:.7;font-size:9.5px;">নিজে </span>${formatNum(own)}৳</span>
+                <span><span style="opacity:.7;font-size:9.5px;">ডাউন </span>${formatNum(down)}৳</span>
             </div>
             <div style="display:flex;justify-content:space-between;margin-top:3px;font-size:10.5px;font-weight:700;">
                 <span>${levelLabel}${noteIcon}</span><span>${dateStr}</span>
@@ -926,40 +926,40 @@ function exportHTML(){
     let listRows=arr.map(item=>{
         const n=item.node;
         const levelStr=item.pos.depth===0?'ROOT':('L'+item.pos.depth);
-        const sideFlag=item.pos.depth===0?'Â·':(n.side==='left'?'â—€ à¦¬à¦¾à¦®':'â–¶ à¦¡à¦¾à¦¨');
+        const sideFlag=item.pos.depth===0?'·':(n.side==='left'?'◀ বাম':'▶ ডান');
         return `<tr>
-            <td style="font-weight:800;color:#1f5f4e;padding:5px 8px;border-bottom:1px solid #ddd;">${escapeHtml(n.xmCode||'â€”')}</td>
+            <td style="font-weight:800;color:#1f5f4e;padding:5px 8px;border-bottom:1px solid #ddd;">${escapeHtml(n.xmCode||'—')}</td>
             <td style="padding:5px 8px;border-bottom:1px solid #ddd;">${escapeHtml(n.name)}</td>
             <td style="padding:5px 8px;border-bottom:1px solid #ddd;color:#666;">${levelStr} ${sideFlag}</td>
-            <td style="padding:5px 8px;border-bottom:1px solid #ddd;text-align:right;">${formatNum(Number(n.investment)||0)}à§³</td>
-            <td style="padding:5px 8px;border-bottom:1px solid #ddd;text-align:right;">${formatNum(calcDownline(n.id))}à§³</td>
+            <td style="padding:5px 8px;border-bottom:1px solid #ddd;text-align:right;">${formatNum(Number(n.investment)||0)}৳</td>
+            <td style="padding:5px 8px;border-bottom:1px solid #ddd;text-align:right;">${formatNum(calcDownline(n.id))}৳</td>
             <td style="padding:5px 8px;border-bottom:1px solid #ddd;text-align:center;">${invCount(n)}</td>
             <td style="padding:5px 8px;border-bottom:1px solid #ddd;color:#666;">${lastInvDate(n)}</td>
             <td style="padding:5px 8px;border-bottom:1px solid #ddd;color:#666;">${n.joinDate||''}</td>
             <td style="padding:5px 8px;border-bottom:1px solid #ddd;color:#666;">${escapeHtml(n.note||'')}</td>
         </tr>`;
     }).join('');
-    const html=`<!DOCTYPE html><html lang="bn"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Joining Tree â€” ${new Date().toISOString().slice(0,10)}</title><link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style>body{margin:0;padding:20px;background:#eef2ee;font-family:'Hind Siliguri',sans-serif;color:#1c2321;}h1{font-size:20px;color:#1f5f4e;margin-bottom:12px;}h2{font-size:16px;color:#1f5f4e;margin:24px 0 10px;border-bottom:2px solid #1f5f4e;padding-bottom:4px;}.canvas-wrapper{position:relative;overflow:auto;background:#fff;border:1px solid #c9d2cb;border-radius:12px;padding:10px;}table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.08);}th{background:#1f5f4e;color:#fff;padding:8px;text-align:left;font-size:13px;}.hint{font-size:12px;color:#5c6b64;margin:8px 0;background:#f0f4f1;padding:8px 12px;border-radius:8px;}</style></head><body>
-<h1>ðŸŒ³ à¦œà¦¯à¦¼à§‡à¦¨à¦¿à¦‚ à¦Ÿà§à¦°à¦¿ â€” à¦à¦•à§à¦¸à¦ªà§‹à¦°à§à¦Ÿ</h1>
-<div class="hint">à¦¸à¦¬ à¦Ÿà§‡à¦•à§à¦¸à¦Ÿ à¦•à¦ªà¦¿ à¦•à¦°à¦¾ à¦¯à¦¾à¦¬à§‡à¥¤ à¦Ÿà§‡à¦¬à¦¿à¦² à¦¥à§‡à¦•à§‡ XM à¦•à§‹à¦¡, à¦¨à¦¾à¦®, à¦¤à¦¾à¦°à¦¿à¦–, à¦¨à§‹à¦Ÿ à¦¸à¦¬ à¦¸à¦¿à¦²à§‡à¦•à§à¦Ÿ à¦•à¦°à§‡ à¦•à¦ªà¦¿ à¦•à¦°à§à¦¨à¥¤</div>
-<h2>à¦Ÿà§à¦°à¦¿ à¦­à¦¿à¦‰</h2>
+    const html=`<!DOCTYPE html><html lang="bn"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Joining Tree — ${new Date().toISOString().slice(0,10)}</title><link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700;800&display=swap" rel="stylesheet"><style>body{margin:0;padding:20px;background:#eef2ee;font-family:'Hind Siliguri',sans-serif;color:#1c2321;}h1{font-size:20px;color:#1f5f4e;margin-bottom:12px;}h2{font-size:16px;color:#1f5f4e;margin:24px 0 10px;border-bottom:2px solid #1f5f4e;padding-bottom:4px;}.canvas-wrapper{position:relative;overflow:auto;background:#fff;border:1px solid #c9d2cb;border-radius:12px;padding:10px;}table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,.08);}th{background:#1f5f4e;color:#fff;padding:8px;text-align:left;font-size:13px;}.hint{font-size:12px;color:#5c6b64;margin:8px 0;background:#f0f4f1;padding:8px 12px;border-radius:8px;}</style></head><body>
+<h1>🌳 জয়েনিং ট্রি — এক্সপোর্ট</h1>
+<div class="hint">সব টেক্সট কপি করা যাবে। টেবিল থেকে XM কোড, নাম, তারিখ, নোট সব সিলেক্ট করে কপি করুন।</div>
+<h2>ট্রি ভিউ</h2>
 <div class="canvas-wrapper"><div style="position:relative;width:${svgW}px;height:${svgH}px;">${linesSvg}${nodesHtml}</div></div>
-<h2>à¦¸à¦¬ à¦¨à§‹à¦¡à§‡à¦° à¦¤à¦¾à¦²à¦¿à¦•à¦¾</h2>
-<table><thead><tr><th>XM</th><th>à¦¨à¦¾à¦®</th><th>à¦²à§‡à¦­à§‡à¦²</th><th>à¦¨à¦¿à¦œà§‡</th><th>à¦¡à¦¾à¦‰à¦¨</th><th>à¦¬à¦¾à¦°</th><th>à¦¶à§‡à¦· à¦‡à¦¨à¦­à§‡à¦¸à§à¦Ÿ</th><th>à¦œà¦¯à¦¼à§‡à¦¨</th><th>à¦¨à§‹à¦Ÿ</th></tr></thead><tbody>${listRows}</tbody></table></body></html>`;
+<h2>সব নোডের তালিকা</h2>
+<table><thead><tr><th>XM</th><th>নাম</th><th>লেভেল</th><th>নিজে</th><th>ডাউন</th><th>বার</th><th>শেষ ইনভেস্ট</th><th>জয়েন</th><th>নোট</th></tr></thead><tbody>${listRows}</tbody></table></body></html>`;
     const blob=new Blob([html],{type:'text/html;charset=utf-8'});
-    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Joining_Tree_${new Date().toISOString().slice(0,10)}.html`;a.click();URL.revokeObjectURL(url);toast('HTML à¦¸à§‡à¦­ à¦¹à¦¯à¦¼à§‡à¦›à§‡à¥¤')
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=`Joining_Tree_${new Date().toISOString().slice(0,10)}.html`;a.click();URL.revokeObjectURL(url);toast('HTML সেভ হয়েছে।')
 }
 function idbOpen(){return new Promise((res,rej)=>{const r=indexedDB.open('JoiningTreeDB',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
 async function idbSet(k,v){const db=await idbOpen();return new Promise((res,rej)=>{const tx=db.transaction('kv','readwrite');tx.objectStore('kv').put(v,k);tx.oncomplete=res;tx.onerror=()=>rej(tx.error)})}
 async function idbGet(k){const db=await idbOpen();return new Promise((res,rej)=>{const tx=db.transaction('kv','readonly');const r=tx.objectStore('kv').get(k);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
 async function pickBackupFolder(){
-    if(!window.showDirectoryPicker){toast('à¦à¦‡ à¦¬à§à¦°à¦¾à¦‰à¦œà¦¾à¦°à§‡ à¦¸à¦¾à¦ªà§‹à¦°à§à¦Ÿ à¦¨à§‡à¦‡à¥¤ Chrome à¦¬à§à¦¯à¦¬à¦¹à¦¾à¦° à¦•à¦°à§à¦¨à¥¤');return}
+    if(!window.showDirectoryPicker){toast('এই ব্রাউজারে সাপোর্ট নেই। Chrome ব্যবহার করুন।');return}
     try{
         const dir=await window.showDirectoryPicker({mode:'readwrite'});
         const opts={mode:'readwrite'};
-        if((await dir.queryPermission(opts))!=='granted'){if((await dir.requestPermission(opts))!=='granted'){toast('à¦…à¦¨à§à¦®à¦¤à¦¿ à¦¦à§‡à¦“à¦¯à¦¼à¦¾ à¦¹à¦¯à¦¼à¦¨à¦¿à¥¤');return}}
+        if((await dir.queryPermission(opts))!=='granted'){if((await dir.requestPermission(opts))!=='granted'){toast('অনুমতি দেওয়া হয়নি।');return}}
         backupDirHandle=dir;await idbSet('backupDir',dir);
-        toast(`à¦«à§‹à¦²à§à¦¡à¦¾à¦°: ${dir.name}`);updateBackupStatus();
+        toast(`ফোল্ডার: ${dir.name}`);updateBackupStatus();
         await writeAutoBackup(true);
     }catch(e){if(e.name!=='AbortError')console.error(e)}
 }
@@ -972,15 +972,15 @@ async function writeAutoBackup(force){
         const fh=await backupDirHandle.getFileHandle(fn,{create:true});const w=await fh.createWritable();
         await w.write(JSON.stringify(treeData,null,2));await w.close();
         localStorage.setItem(BACKUP_KEY,String(Date.now()));
-        if(force)toast('à¦¬à§à¦¯à¦¾à¦•à¦†à¦ª à¦¸à§‡à¦­ à¦¹à¦¯à¦¼à§‡à¦›à§‡à¥¤');updateBackupStatus();return true;
+        if(force)toast('ব্যাকআপ সেভ হয়েছে।');updateBackupStatus();return true;
     }catch(e){console.error('Backup failed',e);return false}
 }
-async function runAutoBackupNow(){if(!backupDirHandle){toast('à¦†à¦—à§‡ à¦«à§‹à¦²à§à¦¡à¦¾à¦° à¦¸à§‡à¦Ÿ à¦•à¦°à§à¦¨à¥¤');return}const ok=await writeAutoBackup(true);if(!ok)toast('à¦¬à§à¦¯à¦¾à¦•à¦†à¦ª à¦¬à§à¦¯à¦°à§à¦¥à¥¤')}
+async function runAutoBackupNow(){if(!backupDirHandle){toast('আগে ফোল্ডার সেট করুন।');return}const ok=await writeAutoBackup(true);if(!ok)toast('ব্যাকআপ ব্যর্থ।')}
 async function checkAutoBackup(){if(!backupDirHandle)return;if(Date.now()-lastBackupCheck<5*60*1000)return;lastBackupCheck=Date.now();const last=parseInt(localStorage.getItem(BACKUP_KEY)||'0',10);if(Date.now()-last>=TWELVE_HOURS)await writeAutoBackup(false)}
 function updateBackupStatus(){
     const el=document.getElementById('backupStatus');if(!el)return;
-    if(!backupDirHandle){el.textContent='à¦«à§‹à¦²à§à¦¡à¦¾à¦° à¦¸à§‡à¦Ÿ à¦•à¦°à¦¾ à¦¹à¦¯à¦¼à¦¨à¦¿à¥¤'}
-    else{const last=parseInt(localStorage.getItem(BACKUP_KEY)||'0',10);const s=last?new Date(last).toLocaleString('bn-BD'):'à¦à¦–à¦¨à§‹ à¦¹à¦¯à¦¼à¦¨à¦¿';el.innerHTML=`ðŸ“ <b>${escapeHtml(backupDirHandle.name)}</b><br>à¦¶à§‡à¦·: ${s}`}
+    if(!backupDirHandle){el.textContent='ফোল্ডার সেট করা হয়নি।'}
+    else{const last=parseInt(localStorage.getItem(BACKUP_KEY)||'0',10);const s=last?new Date(last).toLocaleString('bn-BD'):'এখনো হয়নি';el.innerHTML=`📁 <b>${escapeHtml(backupDirHandle.name)}</b><br>শেষ: ${s}`}
 }
 async function initBackup(){try{const d=await idbGet('backupDir');if(d){backupDirHandle=d;updateBackupStatus();checkAutoBackup()}}catch(e){console.warn(e)}}
 
