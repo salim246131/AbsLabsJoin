@@ -147,6 +147,14 @@ body.dark .recent-item:hover{background:#2a3730}
 .bar-fill{height:100%;border-radius:4px}
 #toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.85);color:#fff;padding:10px 18px;border-radius:20px;font-size:13px;font-weight:600;z-index:999;pointer-events:none;opacity:0;transition:opacity .25s;max-width:90vw;text-align:center}
 #toast.show{opacity:1}
+#gate{position:fixed;inset:0;z-index:300;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:20px}
+.gate-box{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:26px 22px;max-width:380px;width:100%;text-align:center;box-shadow:0 8px 30px rgba(0,0,0,.12)}
+.gate-ico{font-size:42px;margin-bottom:6px}
+.gate-box h2{font-size:20px;font-weight:700;color:var(--trunk);margin-bottom:10px}
+body.dark .gate-box h2{color:#6fc9a8}
+.gate-box p{font-size:14px;line-height:1.6;color:var(--muted);margin-bottom:6px;word-break:break-word}
+.sync-badge{font-size:12px;font-weight:700;padding:5px 9px;border-radius:9px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.22);color:#fff;cursor:pointer;white-space:nowrap;display:none}
+.sync-badge.ok{color:#9cf0c6}.sync-badge.saving{color:#ffd37a}.sync-badge.off{color:#cfd8d3}.sync-badge.err{color:#ff9c8a}
 </style>
 </head>
 <body>
@@ -154,6 +162,7 @@ body.dark .recent-item:hover{background:#2a3730}
 <header class="top">
     <h1>🌳 জয়েনিং ট্রি</h1>
     <div class="spacer"></div>
+    <span class="sync-badge" id="syncBadge" onclick="openMenu()"></span>
     <button class="icon-btn" onclick="toggleSearch()">🔍</button>
     <button class="icon-btn" onclick="openMenu()">☰</button>
 </header>
@@ -181,6 +190,12 @@ body.dark .recent-item:hover{background:#2a3730}
     <div class="modal-box">
         <button class="close" onclick="closeModal('menuModal')">✕</button>
         <h2>মেনু</h2>
+        <div class="menu-section" style="margin-top:0;margin-bottom:14px">
+            <h3>☁ ক্লাউড অ্যাকাউন্ট</h3>
+            <div class="team-info" id="accountInfo">—</div>
+            <button class="btn btn-outline btn-sm" id="legacyBtn" style="display:none" onclick="uploadLegacy()">⬆ এই ব্রাউজারের পুরনো তথ্য ক্লাউডে তুলুন</button>
+            <button class="btn btn-outline btn-sm" onclick="cloudSignOut()">🚪 লগ আউট</button>
+        </div>
         <div class="stat-grid">
             <div class="stat-card"><div class="v" id="statMembers">0</div><div class="l">সক্রিয়</div></div>
             <div class="stat-card"><div class="v" id="statInvest">0৳</div><div class="l">টিম ইনভেস্ট</div></div>
@@ -240,6 +255,12 @@ body.dark .recent-item:hover{background:#2a3730}
                     <li>"↑ উপরে" চাপলে প্যারেন্টের ব্লকে ফিরবে</li>
                     <li>"◀ বামে যোগ" / "ডানে যোগ ▶" দিয়ে নতুন চাইল্ড</li>
                 </ul>
+                <h4>ক্লাউড</h4>
+                <ul style="padding-left:18px">
+                    <li>গুগল দিয়ে ঢুকলে আপনার ট্রি ক্লাউড থেকে আসে, বদলালেই অটো সেভ</li>
+                    <li>ফোন ও কম্পিউটারে একই ট্রি, ব্যাকআপ ছাড়াই</li>
+                    <li>ওপরের ☁ চিহ্নে সেভের অবস্থা দেখা যায়</li>
+                </ul>
                 <h4>ইনভেস্ট তালিকা</h4>
                 <ul style="padding-left:18px">
                     <li>এডিটে প্রতিটি ইনভেস্ট আলাদা এন্ট্রি (টাকা + তারিখ)</li>
@@ -295,6 +316,14 @@ body.dark .recent-item:hover{background:#2a3730}
     </div>
 </div>
 
+<div id="gate">
+    <div class="gate-box">
+        <div class="gate-ico">🌳</div>
+        <h2>জয়েনিং ট্রি</h2>
+        <p id="gateMsg">লোড হচ্ছে…</p>
+        <button class="btn btn-primary" id="gateBtn" style="display:none"></button>
+    </div>
+</div>
 <div id="toast"></div>
 
 <script>
@@ -360,17 +389,35 @@ function lastInvDate(n){
 function loadRecent(){try{recentViewed=JSON.parse(localStorage.getItem(RECENT_KEY)||'[]')}catch(e){recentViewed=[]}}
 function addRecent(id){recentViewed=[id,...recentViewed.filter(x=>x!==id)].slice(0,5);localStorage.setItem(RECENT_KEY,JSON.stringify(recentViewed))}
 
-function load(){
-    const s=localStorage.getItem(STORAGE_KEY);
-    if(s){try{treeData=JSON.parse(s)}catch(e){treeData={nodes:{}}}}
-    if(!treeData.nodes)treeData.nodes={};
-    Object.values(treeData.nodes).forEach(normalizeNode);
-    loadRecent();
-    render();
+function load(){loadRecent();render()}
+/* ---------- ক্লাউড সেভ ---------- */
+let cloudUser=null,cloudReady=false,cloudUnsub=null,lastJson='',saveTimer=null,pendingJson='',migrationAsked=false,snapTimer=null,syncState='none';
+const BADGE={ok:['☁ ✓','ক্লাউডে সেভ আছে'],saving:['☁ ⟳','সেভ হচ্ছে…'],off:['☁ ✕','অফলাইন — নেট ফিরলে সেভ হবে'],err:['☁ !','সেভ হয়নি']};
+function setBadge(st){
+    syncState=st;const el=document.getElementById('syncBadge');if(!el)return;
+    if(!BADGE[st]||!cloudUser){el.style.display='none';return}
+    el.style.display='inline-block';el.className='sync-badge '+st;el.textContent=BADGE[st][0];el.title=BADGE[st][1];
 }
-function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(treeData));render()}
+function save(){
+    const json=JSON.stringify(treeData);
+    lastJson=json;pendingJson=json;
+    render();
+    if(!cloudUser||!cloudReady)return;
+    setBadge(navigator.onLine?'saving':'off');
+    clearTimeout(saveTimer);saveTimer=setTimeout(flushSave,500);
+}
+function flushSave(){
+    saveTimer=null;
+    if(!cloudUser||!cloudReady)return;
+    const json=pendingJson;
+    Cloud.save(cloudUser.uid,json).then(()=>{if(!saveTimer)setBadge(navigator.onLine?'ok':'off')}).catch(e=>{
+        console.error(e);
+        if(e&&e.code==='permission-denied'){cloudReady=false;setGate('denied')}
+        else{setBadge('err');toast('ক্লাউডে সেভ হয়নি। ইন্টারনেট দেখুন।')}
+    });
+}
 function pushHistory(){history.push(JSON.stringify(treeData));if(history.length>30)history.shift()}
-function undo(){if(!history.length){toast('Undo করার কিছু নেই।');return}treeData=JSON.parse(history.pop());localStorage.setItem(STORAGE_KEY,JSON.stringify(treeData));render();toast('ফিরিয়ে আনা হয়েছে।')}
+function undo(){if(!history.length){toast('Undo করার কিছু নেই।');return}treeData=JSON.parse(history.pop());save();toast('ফিরিয়ে আনা হয়েছে।')}
 const findRootId=()=>{for(const id in treeData.nodes){if(treeData.nodes[id].parentId===null)return id}return null};
 function calcTeamInvestment(id){const n=treeData.nodes[id];if(!n)return 0;let t=n.active===false?0:(Number(n.investment)||0);(n.children||[]).forEach(c=>t+=calcTeamInvestment(c));return t}
 function calcDownline(id){const n=treeData.nodes[id];if(!n)return 0;let t=0;(n.children||[]).forEach(c=>t+=calcTeamInvestment(c));return t}
@@ -691,7 +738,7 @@ function openMenu(){
     document.getElementById('statNodes').textContent=Object.keys(treeData.nodes).length;
     if(r){document.getElementById('statMembers').textContent=countActive(r);document.getElementById('statInvest').textContent=formatNum(calcTeamInvestment(r))+'৳'}
     else{document.getElementById('statMembers').textContent='0';document.getElementById('statInvest').textContent='0৳'}
-    renderChart();renderRecent();updateBackupStatus();
+    renderChart();renderRecent();updateBackupStatus();updateAccountInfo();
     document.getElementById('menuModal').classList.add('open');
 }
 function toggleGuide(){document.getElementById('guideBox').classList.toggle('open')}
@@ -984,7 +1031,110 @@ function updateBackupStatus(){
 }
 async function initBackup(){try{const d=await idbGet('backupDir');if(d){backupDirHandle=d;updateBackupStatus();checkAutoBackup()}}catch(e){console.warn(e)}}
 
-initDark();initCompact();applyView();setupPanZoom();load();initBackup();
+/* ---------- গুগল লগইন ও ক্লাউড সিঙ্ক ---------- */
+function setGate(mode,msg){
+    const g=document.getElementById('gate'),m=document.getElementById('gateMsg'),b=document.getElementById('gateBtn');
+    if(!mode){g.style.display='none';return}
+    g.style.display='flex';b.style.display='none';
+    if(mode==='loading'){m.textContent=msg||'লোড হচ্ছে…'}
+    else if(mode==='login'){m.textContent=msg||'আপনার ট্রি দেখতে গুগল দিয়ে ঢুকুন।';b.textContent='🔑 গুগল দিয়ে ঢুকুন';b.onclick=doSignIn;b.style.display='flex'}
+    else if(mode==='denied'){m.textContent='এই ইমেল ('+(cloudUser?cloudUser.email:'')+') এই ট্রি ব্যবহারের অনুমতি পায়নি। যিনি পেজটি দিয়েছেন তাঁকে ইমেলটি অনুমোদন করতে বলুন, অথবা অন্য ইমেল দিয়ে ঢুকুন।';b.textContent='অন্য ইমেল দিয়ে ঢুকুন';b.onclick=cloudSignOut;b.style.display='flex'}
+    else{m.textContent=msg||'সমস্যা হয়েছে।';b.textContent='↻ আবার চেষ্টা';b.onclick=()=>location.reload();b.style.display='flex'}
+}
+function whenCloud(){return new Promise(res=>{if(window.Cloud)return res();window.addEventListener('cloud-ready',()=>res(),{once:true})})}
+function startCloud(){
+    setGate('loading');
+    let loaded=false;
+    const t=setTimeout(()=>{if(!loaded)setGate('error','ফায়ারবেস লোড হয়নি। ইন্টারনেট দেখে আবার চেষ্টা করুন।')},15000);
+    whenCloud().then(()=>{loaded=true;clearTimeout(t);Cloud.onAuth(onAuthChange)});
+}
+function onAuthChange(user){
+    if(cloudUnsub){cloudUnsub();cloudUnsub=null}
+    clearTimeout(saveTimer);saveTimer=null;clearTimeout(snapTimer);
+    cloudReady=false;lastJson='';migrationAsked=false;
+    if(!user){
+        cloudUser=null;treeData={nodes:{}};history=[];render();setBadge('none');setGate('login');return;
+    }
+    cloudUser=user;
+    setGate('loading','আপনার ট্রি আনা হচ্ছে…');
+    snapTimer=setTimeout(()=>{if(!cloudReady)setGate('error','তথ্য আনা যায়নি। ইন্টারনেট সংযোগ দেখে আবার চেষ্টা করুন।')},15000);
+    cloudUnsub=Cloud.subscribe(user.uid,onCloudData,onCloudErr);
+}
+function onCloudData(s){
+    clearTimeout(snapTimer);
+    if(s.pending)return;                       /* নিজের লেখার প্রতিধ্বনি */
+    const net=s.fromCache?'off':'ok';
+    if(!s.exists){
+        if(s.fromCache)return;                 /* সার্ভারের উত্তরের অপেক্ষা */
+        treeData={nodes:{}};lastJson='';
+        cloudReady=true;render();setGate(null);setBadge('ok');
+        offerMigration();return;
+    }
+    if(s.json===lastJson&&cloudReady){setBadge(saveTimer?'saving':net);return}
+    if(saveTimer)return;                       /* নিজের অসেভ পরিবর্তন আছে, ওগুলোই যাবে */
+    let d;try{d=JSON.parse(s.json)}catch(e){setGate('error','ক্লাউডের তথ্য পড়া যায়নি।');return}
+    if(!d||!d.nodes)d={nodes:{}};
+    const wasReady=cloudReady;
+    treeData=d;Object.values(treeData.nodes).forEach(normalizeNode);
+    lastJson=JSON.stringify(treeData);
+    cloudReady=true;render();setGate(null);setBadge(net);
+    if(wasReady)toast('অন্য ডিভাইস থেকে আপডেট এসেছে।');
+}
+function onCloudErr(e){
+    clearTimeout(snapTimer);console.error(e);
+    if(e&&e.code==='permission-denied'){cloudReady=false;setGate('denied')}
+    else setGate('error','তথ্য আনা যায়নি: '+((e&&e.code)||e));
+}
+async function doSignIn(){
+    if(location.protocol==='file:'){setGate('error','ফাইলটি সরাসরি খুললে গুগল লগইন কাজ করে না। GitHub Pages-এর লিংক থেকে খুলুন।');return}
+    setGate('loading','গুগল লগইন হচ্ছে…');
+    try{await Cloud.signIn()}catch(e){
+        console.error(e);
+        if(e.code==='auth/popup-closed-by-user'||e.code==='auth/cancelled-popup-request'){setGate('login');return}
+        if(e.code==='auth/unauthorized-domain'){setGate('error','এই ডোমেইন Firebase-এ অনুমোদিত নয়।');return}
+        setGate('error','লগইন করা যায়নি: '+(e.code||e.message));
+    }
+}
+async function cloudSignOut(){
+    if(saveTimer){clearTimeout(saveTimer);flushSave();await new Promise(r=>setTimeout(r,400))}
+    closeModal('menuModal');
+    try{await Cloud.signOut()}catch(e){console.error(e)}
+}
+function readLegacy(){
+    try{
+        const o=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null');
+        if(o&&o.nodes&&Object.keys(o.nodes).length){Object.values(o.nodes).forEach(normalizeNode);return o}
+    }catch(e){}
+    return null;
+}
+function offerMigration(){
+    if(migrationAsked)return;migrationAsked=true;
+    const old=readLegacy();if(!old)return;
+    const n=Object.keys(old.nodes).length;
+    setTimeout(()=>{
+        if(confirm('এই ব্রাউজারে আগের সংরক্ষিত ট্রি পাওয়া গেছে ('+n+'টি নোড)।\n\nএটা এখন আপনার ক্লাউড অ্যাকাউন্টে তুলবেন?\n\nOK = তুলুন, Cancel = এখন না')){
+            treeData=old;save();toast('ক্লাউডে তোলা হয়েছে।');
+        }
+    },300);
+}
+function uploadLegacy(){
+    const old=readLegacy();if(!old){toast('এই ব্রাউজারে পুরনো তথ্য নেই।');return}
+    const n=Object.keys(old.nodes).length;
+    if(!confirm('এই ব্রাউজারের পুরনো ট্রি ('+n+'টি নোড) ক্লাউডে তুললে ক্লাউডের বর্তমান ট্রি বদলে যাবে। নিশ্চিত?'))return;
+    pushHistory();treeData=old;save();closeModal('menuModal');toast('ক্লাউডে তোলা হয়েছে।');
+}
+function updateAccountInfo(){
+    const el=document.getElementById('accountInfo');if(!el)return;
+    el.textContent=cloudUser?(cloudUser.email+(BADGE[syncState]?' · '+BADGE[syncState][1]:'')):'লগইন করা নেই';
+    document.getElementById('legacyBtn').style.display=(cloudUser&&cloudReady&&readLegacy())?'flex':'none';
+}
+window.addEventListener('online',()=>{if(cloudUser&&cloudReady)setBadge(saveTimer?'saving':'ok')});
+window.addEventListener('offline',()=>{if(cloudUser&&cloudReady)setBadge('off')});
+function flushNow(){if(saveTimer){clearTimeout(saveTimer);flushSave()}}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)flushNow()});
+window.addEventListener('pagehide',flushNow);
+
+initDark();initCompact();applyView();setupPanZoom();load();initBackup();startCloud();
 setInterval(checkAutoBackup,30*60*1000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkAutoBackup()});
 document.querySelectorAll('.modal-overlay').forEach(ov=>{ov.addEventListener('click',e=>{if(e.target===ov)ov.classList.remove('open')})});
@@ -992,6 +1142,77 @@ document.addEventListener('keydown',e=>{
     if((e.ctrlKey||e.metaKey)&&e.key==='z'&&!e.shiftKey){const t=(e.target.tagName||'').toLowerCase();if(t!=='input'&&t!=='textarea'){e.preventDefault();undo()}}
     if((e.ctrlKey||e.metaKey)&&e.key==='f'){e.preventDefault();toggleSearch()}
 });
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { initializeFirestore, getFirestore, persistentLocalCache, persistentMultipleTabManager, collection, doc, onSnapshot, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC3bRyVG_Ep9TD7z67KOqgIDo3mov05HKo",
+  authDomain: "joining-tree.firebaseapp.com",
+  projectId: "joining-tree",
+  storageBucket: "joining-tree.firebasestorage.app",
+  messagingSenderId: "615025235105",
+  appId: "1:615025235105:web:3f5c8e46c8c4c07b714ce0"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+let db;
+try { db = initializeFirestore(app, { localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() }) }); }
+catch (e) { db = getFirestore(app); }
+
+const CH = 250000;
+let lastN = 0;
+const dref = (uid, id) => doc(db, 'users', uid, 'data', id);
+const cid = i => 'c' + String(i).padStart(4, '0');
+function split(json) {
+  const out = []; let i = 0;
+  while (i < json.length) {
+    let e = Math.min(i + CH, json.length);
+    if (e < json.length) { const c = json.charCodeAt(e - 1); if (c >= 0xD800 && c <= 0xDBFF) e--; }
+    out.push(json.slice(i, e)); i = e;
+  }
+  return out.length ? out : [''];
+}
+
+window.Cloud = {
+  onAuth: cb => onAuthStateChanged(auth, cb),
+  async signIn() {
+    const p = new GoogleAuthProvider();
+    p.setCustomParameters({ prompt: 'select_account' });
+    try { await signInWithPopup(auth, p); }
+    catch (e) {
+      if (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment') await signInWithRedirect(auth, p);
+      else throw e;
+    }
+  },
+  signOut: () => signOut(auth),
+  subscribe(uid, onData, onErr) {
+    return onSnapshot(collection(db, 'users', uid, 'data'), { includeMetadataChanges: true }, snap => {
+      const d = {}; snap.forEach(x => { d[x.id] = x.data(); });
+      const base = { pending: snap.metadata.hasPendingWrites, fromCache: snap.metadata.fromCache };
+      const meta = d.meta;
+      if (!meta) { onData({ ...base, exists: false, json: null }); return; }
+      lastN = meta.n;
+      let json = '';
+      for (let i = 0; i < meta.n; i++) { const c = d[cid(i)]; if (!c) return; json += c.p; }
+      onData({ ...base, exists: true, json });
+    }, onErr);
+  },
+  async save(uid, json) {
+    const parts = split(json);
+    const b = writeBatch(db);
+    parts.forEach((p, i) => b.set(dref(uid, cid(i)), { i, p }));
+    for (let i = parts.length; i < lastN; i++) b.delete(dref(uid, cid(i)));
+    b.set(dref(uid, 'meta'), { n: parts.length, len: json.length, updatedAt: serverTimestamp() });
+    lastN = parts.length;
+    await b.commit();
+  }
+};
+window.dispatchEvent(new Event('cloud-ready'));
 </script>
 </body>
 </html>
